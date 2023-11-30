@@ -25,4 +25,6 @@ int main()
 
     // Mostra ao usuário em quantos meses irá perder o peso
     printf("Você vai demorar %.1f meses para perder %.2fkg\n\n", meses, diferencaPeso);
+
+    return 0;
 }
