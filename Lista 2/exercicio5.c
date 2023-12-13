@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <math.h>
 
+#define PI 3.14159265358979323846
+
 float quadrado(float x) {
     return x * x;
 }
 
 void calculaArea(float r, float *A){
-    *A = M_PI * quadrado(r);
+    *A = PI * quadrado(r);
 }
 
 int main() {
