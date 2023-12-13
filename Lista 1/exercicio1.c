@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+/*
+    Código que mostra o antecessor e o sucessor
+    de um número passado pelo usuário
+*/
+
 int main()
 {
     // Declarando as variáveis

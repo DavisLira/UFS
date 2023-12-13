@@ -1,19 +1,24 @@
 #include <stdio.h>
 
+/*
+    Código que calcula quanto tempo a pessoa perde o peso de acordo com
+    os pesos atual, ideal e a perda mensal
+*/
+
 int main()
 {
     // Declaração das variáveis
     float pesoAtual, pesoIdeal, perdaMensal, meses, diferencaPeso;
 
-    //Solicita ao usuário o peso atual em kg
+    // Solicita o peso atual
     printf("Digite o peso atual em kg: ");
     scanf("%f", &pesoAtual);
 
-    // Solicita ao usuário o peso ideal em kg
+    // Solicita peso ideal
     printf("Digite o peso ideal em kg: ");
     scanf("%f", &pesoIdeal);
 
-    // Solicita ao usuário a perda mensal
+    // Solicita a perda mensal
     printf("Digite a perda mensal em kg: ");
     scanf("%f", &perdaMensal);
 

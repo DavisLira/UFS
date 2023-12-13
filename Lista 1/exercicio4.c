@@ -1,11 +1,15 @@
 #include <stdio.h>
 
+/*
+    Código que converte real para dólar
+*/
+
 int main()
 {
     // Declaração das variáveis
     float real, dolar, cambio;
 
-    // Solicita o valor em reais para o usuário
+    // Solicita o valor em reais
     printf("Digite a quantidade de Reais para a conversão: ");
     scanf("%f", &real);
 
@@ -13,7 +17,7 @@ int main()
     printf("Digite quanto 1 Dólar vale em Reais: ");
     scanf("%f", &cambio);
 
-    // Calcula a quantidade de Dólares de acordo com a quantidade de Reais e o câmbio
+    // Calculo da conversão
     dolar = real / cambio;
 
     // Mostra a conversão

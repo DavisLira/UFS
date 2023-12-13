@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+/*
+    Código que mostra os anos das próximas 3 doses a serem tomadas
+    de acordo com o ano da 1° dose e o intevalo entre as doses
+*/
+
 int main()
 {
     // Declaração das variáveis
