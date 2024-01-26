@@ -1,4 +1,17 @@
 #include <stdio.h>
+#include <ctype.h>
+
+char continuar(char resp) {
+    resp = toupper(resp);
+    if (resp == 'S' || resp == 'N') {
+        return resp;
+    } else {
+        printf("Digite uma resposta valida [S / N]: ");
+        scanf(" %c", &resp);
+        continuar(resp);
+    }
+    return toupper(resp);
+}
 
 void calculaMedia(int numNotas, float notas[], float *media) {
     float soma = 0;
@@ -11,10 +24,10 @@ void calculaMedia(int numNotas, float notas[], float *media) {
 }
 
 int main() {
-    int opcao = 1;
+    char opcao;
     float notas[4], media;
 
-    while (opcao == 1) {
+    do {
         printf("Digite a 1° nota: ");
         scanf("%f", &notas[0]);
         printf("Digite a 2° nota: ");
@@ -42,8 +55,13 @@ int main() {
             printf("Aluno reprovado!\n");
         } 
 
-        printf("Quer verificar a situação de outro aluno? 1 - SIM || 2 - NAO\n");
-        scanf("%d", &opcao);
-    }
+        printf("Quer verificar a situação de outro aluno? S – Sim ou N - Não.\n");
+        scanf(" %c", &opcao);
+
+        opcao = toupper(opcao);
+
+        opcao = continuar(opcao);
+
+    } while (opcao == 'S');
     
 }

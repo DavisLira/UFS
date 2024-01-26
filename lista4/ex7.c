@@ -1,6 +1,18 @@
 #include <stdio.h>
 #include <ctype.h>
 
+char continuar(char resp) {
+    resp = toupper(resp);
+    if (resp == 'S' || resp == 'N') {
+        return resp;
+    } else {
+        printf("Digite uma resposta valida [S / N]: ");
+        scanf(" %c", &resp);
+        continuar(resp);
+    }
+    return toupper(resp);
+}
+
 int main() {
     int port, mat, aprovados = 0;
     float red;
@@ -19,10 +31,12 @@ int main() {
             aprovados++;
         }
 
-        printf("\nDeseja sair? S - SIM | N - NAO\n");
+        printf("\nDeseja sair? S – Sim ou N - Não.\n");
         scanf(" %c", &opcao);
 
         opcao = toupper(opcao);
+
+        opcao = continuar(opcao);
 
     } while (opcao == 'N');
     
