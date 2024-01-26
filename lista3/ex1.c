@@ -15,9 +15,9 @@ int main()
     calculaViagens(alunos, &resultado, &resto);
     
     if(alunos <= 11){
-        printf("1 Viagem de kombi e 0 passagens de coletivo");
+        printf("1 Viagem de kombi e 0 passagens de coletivo\n");
     } else {
-        printf("%d viagens de kombi e %d passagens de coletivo", resultado, resto);
+        printf("%d viagens de kombi e %d passagens de coletivo\n", resultado, resto);
     }
     
     return 0;

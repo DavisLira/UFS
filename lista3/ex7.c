@@ -22,6 +22,12 @@ int main() {
 
     printf("1 – area, 2 – perímetro e 3 – diagonal\n");
     scanf("%d", &menu);
+    
+    if(menu != 1 && menu != 2 && menu != 3) {
+        printf("Opção inválida\n\n");
+        return 0;
+    }
+
     printf("Digite o lado do quadrado: ");
     scanf("%f", &lado);
 
@@ -40,9 +46,6 @@ int main() {
         break;
     case 3:
         calculaDiagonal(lado);
-        break;
-    default:
-        printf("Opção inválida\n");
         break;
     }
 }

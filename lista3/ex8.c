@@ -29,6 +29,11 @@ int main() {
     scanf(" %c", &menu);
     menu = toupper(menu);
 
+    if(menu != 'U' && menu != 'D' && menu != 'C' && menu != 'M' && menu != 'Z'){
+        printf("Opção inválida\n\n");
+        return 0;
+    }
+
     printf("Digite um número de 0 a 99999: ");
     scanf("%d", &numero);
 
@@ -53,9 +58,6 @@ int main() {
         break;
     case 'Z':
         identificarDezenaMilhar(numero);
-        break;
-    default:
-        printf("Opção inválida\n");
         break;
     }
 

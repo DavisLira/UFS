@@ -18,7 +18,7 @@ int main() {
 
     verifica(num, div1, div2, &resto1, &resto2);
 
-    if (((resto1 == 0) && (resto2 != 0)) || ((resto1 != 0) && (resto2 == 0))) {
+    if (((resto1 == 0) ^ (resto2 == 0))) {
         printf("ATENDE CONDIÇÂO\n");    
     } else {
         printf("NÃO ATENDE CONDIÇÃO\n");

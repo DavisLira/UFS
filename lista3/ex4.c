@@ -18,12 +18,12 @@ int main()
 {
     int numLido, numGerado;
 
-    printf("Digite um numero de 100 a 999: ");
-    scanf("%i", &numLido);
+    printf("Digite um numero positivo ate 999: ");
+    scanf("%d", &numLido);
 
     inverterDigitos(numLido, &numGerado);
 
-    if (numLido < 100 || numLido > 999) {
+    if (numLido > 999 || numLido < 0) {
         printf("Número inválido\n");
     } else if (numLido > numGerado) {
         printf("Número lido maior que numero gerado\n");
