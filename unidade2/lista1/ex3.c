@@ -2,31 +2,19 @@
 
 #include <stdio.h>
 
-// void atualizaViagem(int qtd, int *qtdMaior, int *qtdMenor, int *qtdTotal,
-//                         int *hora, int *horaMaior, int *horaMenor) 
-// {
-//     *qtdTotal += qtd;
-//     *hora = *hora;
-    
-//     if (qtd < *qtdMenor) {
-//         *horaMenor = *hora;
-//         *qtdMenor = qtd;
-//     } else if (qtd > *qtdMaior) {
-//         *horaMaior = *hora;
-//         *qtdMaior = qtd;
-//     }
-    
-// }
+void atualizaViagem(int qtd, int *qtdMaior, int *qtdMenor, int *qtdTotal,
+                        int *hora, int *horaMaior, int *horaMenor) 
+{
+    *qtdTotal += qtd;
 
-void verificaViagem(int *qtd) {
-
-    do {
-        if (*qtd > 45 || *qtd < 0)
-        {
-            printf("Digite um numero valido!\n\n");
-            scanf("%d", qtd);
-        }
-    } while (*qtd > 45 || *qtd <0);
+    if (qtd < *qtdMenor) {
+        *horaMenor = *hora;
+        *qtdMenor = qtd;
+    }
+    if (qtd > *qtdMaior) {
+        *horaMaior = *hora;
+        *qtdMaior = qtd;
+    }
     
 }
 
@@ -46,16 +34,15 @@ int main()
         printf("Numero de passageiros das %d horas: ", horas);
         scanf("%d", &numPassageiros);
 
-        verificaViagem(&numPassageiros);
+        if (numPassageiros > 45 || numPassageiros < 0) {
+            
+            printf("Digite um número válido de passageiros!\n\n");
+            
+            horas--;
 
-        totalPassageiros += numPassageiros;
-
-        if (numPassageiros < menosPassageiros) {
-            horarioVazio = horas;
-            menosPassageiros = numPassageiros;
-        } else if (numPassageiros > maisPassageiros) {
-            horarioCheio = horas;
-            maisPassageiros = numPassageiros;
+        } else if (numPassageiros >= 0 || numPassageiros <= 45) {
+            atualizaViagem(numPassageiros, &maisPassageiros, &menosPassageiros, 
+                &totalPassageiros, &horas, &horarioCheio, &horarioVazio);
         }
 
     }
@@ -72,14 +59,3 @@ int main()
 
     return 0;
 }
-
-        // if (numPassageiros > 45 || numPassageiros < 0) {
-            
-        //     printf("Digite um número válido de passageiros!\n\n");
-            
-        //     horas--;
-
-        // } else {
-        //     atualizaViagem(numPassageiros, &maisPassageiros, &menosPassageiros, 
-        //         &totalPassageiros, &horas, &horarioCheio, &horarioVazio);
-        // }
