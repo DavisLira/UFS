@@ -20,7 +20,7 @@ int main()
             pesoAtual -= 5;
 
             if (pesoAtual < pesoFinal) {
-                printf("Voce atinge o peso final (%.3f kg) antes do final do mes %d \n", pesoFinal, mes);
+                printf("Mes %d: %.3f \n", mes, pesoFinal);
             } else {
                 printf("Mes %d: %.3f \n", mes, pesoAtual);
             }
