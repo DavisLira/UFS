@@ -1,8 +1,9 @@
 // notas de 50 alunos
+#include <stdio.h>
 
 void verificaNota(float nota, int *acertos, int *situacao) {
     if (nota >= 7) {
-        *acertos++;
+        (*acertos)++;
     }
 
     if (*acertos >= 5)
@@ -14,15 +15,14 @@ void verificaNota(float nota, int *acertos, int *situacao) {
     
 }
 
-#include <stdio.h>
 int main()
 {
 
-    for (int aluno = 1; aluno <= 3; aluno++) {
+    for (int aluno = 1; aluno <= 50; aluno++) {
         printf("\nNota do %d° aluno: \n",aluno);
 
         float nota;
-        int acertos = 0, situacao = -1;
+        int acertos = 0, situacao = 0;
 
         for (int avaliacao = 1; avaliacao <= 12; avaliacao++) {
 
@@ -30,13 +30,13 @@ int main()
             scanf("%f", &nota);
 
             verificaNota(nota, &acertos, &situacao);
-        
-            if (situacao == 1) {
-                printf("Aluno aprovado com %d notas maiores ou iguais a 7\n\n", acertos);
-            } else if (situacao == 0) {
-                printf("O aluno so conseguiu nota suficiente em %d avaliacoes\n\n", acertos);
-            }
             
+        }
+
+        if (situacao == 1) {
+            printf("Aprovado! Nota suficiente em %d avaliacoes\n\n", acertos);
+        } else if (situacao == 0) {
+            printf("Reprovado! Nota suficiente em %d avaliacoes\n\n", acertos);
         }
     }
 
