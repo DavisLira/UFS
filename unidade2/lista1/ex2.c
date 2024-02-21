@@ -2,6 +2,11 @@
 
 #include <stdio.h>
 
+void calculaJuros(float valor, int mes, float *juros, float *total) {
+    *juros = valor * 0.1 * mes;
+    *total = valor + *juros;
+}
+
 int main() {
     float valorCompra, juros, total;
 
@@ -13,8 +18,8 @@ int main() {
 
         for (int mes = 1; mes < 11; mes++)
         {
-            juros = valorCompra * 0.1 * mes;
-            total = valorCompra + juros;
+        
+            calculaJuros(valorCompra, mes, &juros, &total);
             
             if (mes == 1) {
                 printf("Pagamento em %d mes - Juros: R$%.2f - Total: R$%.2f - parcela 1x R$%.2f\n", mes, juros, total, total/mes);
