@@ -36,7 +36,7 @@ int main()
 
     do {
     printf("Digite uma palavra de no maximo 20 caracteres: \n");
-    scanf(" %20[^\n]",palavra);
+    scanf(" %20[^\n]s",palavra);
 
     printf("Quantidade de vogais: %d\n\n", vogais(palavra));
 

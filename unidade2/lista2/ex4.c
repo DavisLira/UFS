@@ -48,7 +48,7 @@ int main()
     do {
 
         printf("Digite nome e sobrenome: ");
-        scanf(" %50[^\n]", nomeCompleto);
+        scanf(" %50[^\n]s", nomeCompleto);
 
         separa(nomeCompleto, nome, sobrenome);
 

@@ -39,7 +39,7 @@ int main()
     int quantidade;
 
     printf("Digite o ano de busca dos alunos de gerontologia (COD: 99): ");
-    scanf(" %4[^\n]", ano);
+    scanf(" %4[^\n]s", ano);
     
     for (int i = 1; i <= 100; i++) {
         printf("Digite a matricula: ");
