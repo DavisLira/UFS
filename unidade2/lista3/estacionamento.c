@@ -72,6 +72,12 @@ void ClienteSai(){
   char Placa[8], Entrada[14], Hora[3], Min[3];
   int H, M; //hora, minuto e segundo
   
+                                                    // ADIÇÃO DA 2° QUESTÃO
+  const char LIVRE[5] = "LIVRE";
+  float custo, pago, troco;
+  char HorarioSaida[6], HoraSaida[3], MinSaida[3];
+  int HSaida, MSaida;
+  
   printf("\n >>> Estacionamento <<< \n");
   printf(" >>>  Largas Vagas  <<< \n");
   printf("\n    SAIDA DE CLIENTE \n");   
@@ -86,12 +92,31 @@ void ClienteSai(){
     
     strcpy(Entrada,Estaciona[Vaga-1]);
     
+                                                    // VERIFICA SE VAGA ESTA LIVRE
+    int livre = 0;
+    for (int i = 0; i < 5; i++)
+    {
+      if (Entrada[i] == LIVRE[i])
+      {
+        livre++;
+        if (livre == 5)
+        {
+          printf("ESSA VAGA TA LIVRE\n");
+          return;
+        }
+      }
+    }
+    
     //Teste
     printf("\n>>>>>>>%s",Entrada);
    
     for (int i=0; i<7; i++)
       Placa[i] = toupper(Entrada[i]);
      
+                                                    // AJUSTE PARA MOSTRAR PLACA
+    strncpy(Placa, Placa, 7);
+    Placa[7] = '\0';
+
     //Teste
     printf("\n>>>>>>>Placa: %s",Placa);
     
@@ -108,6 +133,48 @@ void ClienteSai(){
     printf("\n>>>>>>>Hora: %d",H);
     printf("\n>>>>>>>Minutos: %d\n",M);
     
+                                                    // SEGUNDA QUESTÃO
+
+    printf("Qual o horario de saída [formato nn:nn]? ");
+    scanf(" %5[^\n]s", HorarioSaida);
+
+    HoraSaida[0] = HorarioSaida[0];
+    HoraSaida[1] = HorarioSaida[1];
+    HoraSaida[2] = '\0';
+    HSaida = atoi(HoraSaida); // convete string em inteiro
+    MinSaida[0] = HorarioSaida[3];
+    MinSaida[1] = HorarioSaida[4];
+    MinSaida[2] = '\0';
+    MSaida = atoi(MinSaida); // convete string em inteiro
+
+    if (HSaida >= H) {
+
+      if (MSaida > M) {
+        HSaida++;
+      }
+
+      custo = (HSaida - H) * Valor;
+
+      printf("Valor a pagar: R$ %.2f\n", custo);
+      printf("Valor pago: ");
+      scanf("%f", &pago);
+
+      troco = pago - custo;
+
+      if (troco < 0) {
+        printf("Falta dinheiro!\n");
+      } else {
+        if (troco > 0) {
+          printf("Seu troco: R$%.2f \n", troco);
+        }
+        
+        strcpy(Estaciona[Vaga-1],"LIVRE");
+        printf("ESTACIONAMENTO LIBERADO!\n");
+      }
+      
+    } else {
+      printf("Horário inválido!\n");
+    }
 	
 	  }
  else
