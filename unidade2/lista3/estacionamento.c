@@ -20,47 +20,61 @@ char Estaciona[30][14];
 float Valor;
 char Responsavel[21], Iniciou = 0;
 
+int Op;
+
                                                     // ARRAY AUXILIAR 3° QUESTAO
                                                     // 14 horários de 6 às 20
 int HorasEntradas[14], MaiorQtd = 0, MaiorHorario = 0;
 const char LIVRE[5] = "LIVRE";
 float Dinheiro = 0;
+const char LIMPAR[6] = "clear";
 
 void AbrirCaixa(){
-  printf("\n >>> Estacionamento <<< \n");
-  printf(" >>>  Largas Vagas  <<< \n");
-  printf("\n     ABRINDO  CAIXA \n");
+  system(LIMPAR);
+  if (Iniciou != 1) {
+    printf("\n >>> Estacionamento <<< \n");
+    printf(" >>>  Largas Vagas  <<< \n");
+    printf("\n     ABRINDO  CAIXA \n");
 
-  for (int i=0; i<30; i++)
-     strcpy(Estaciona[i],"LIVRE");
+    for (int i=0; i<30; i++)
+       strcpy(Estaciona[i],"LIVRE");
   
                                                     // Iniciar os horários com 0
-  for (int i = 0; i < 14; i++)
-  {
-    HorasEntradas[i] = 0;
+    for (int i = 0; i < 14; i++)
+    {
+      HorasEntradas[i] = 0;
+    }
+
+    printf("\nQual o valor do estacionamento por hora de uso? ");
+    scanf("%f",&Valor);
+    printf("Qual o nome do responsavel? ");
+    scanf(" %20[^\n]s", Responsavel);
+
+    for (int  i = 0; i < strlen(Responsavel); i++)
+    {
+      Responsavel[i] = toupper(Responsavel[i]);
+    }
+    
+
+    Iniciou=1;
+    system(LIMPAR);
   }
-
-  printf("\nQual o valor do estacionamento por hora de uso? ");
-  scanf("%f",&Valor);
-  printf("Qual o nome do responsavel? ");
-  scanf(" %20[^\n]s", Responsavel);
-
-  Iniciou=1;
+  printf("\n >>> Caixa aberto!! <<<\n");
 }
 
 void ClienteChega(){
   int Vaga, H;
   char Placa[8], Hora[5], Entrada[14];
   
-  printf("\n >>> Estacionamento <<< \n");
-  printf(" >>>  Largas Vagas  <<< \n");
-  printf("\n   CHEGADA DE CLIENTE \n");
-
+  system(LIMPAR);
   if (Iniciou){
+    printf("\n >>> Estacionamento <<< \n");
+    printf(" >>>  Largas Vagas  <<< \n");
+    printf("\n   CHEGADA DE CLIENTE \n");
     printf("\n CAIXA ABERTO   Valor/h: %.2f", Valor);
     printf("\n Responsavel: %s\n\n", Responsavel);
 
-    printf("Qual a vaga ocupada? ");
+    printf("Qual a vaga foi ocupada? ");
     scanf("%d",&Vaga);
 
                                                     // Verifica se a vaga solicitada
@@ -73,7 +87,8 @@ void ClienteChega(){
     }
 
     if (livre != 5) {
-      printf("ESSA VAGA ESTÁ OCUPADA\n");
+      system(LIMPAR);
+      printf("\n   ESSA VAGA ESTÁ OCUPADA\n");
       return;
     }
 
@@ -82,6 +97,7 @@ void ClienteChega(){
 
                                                     // Verifica o tamanho da placa
     if (strlen(Placa) != 7) {
+      system(LIMPAR);
       printf("Erro ao ler a placa!\n");
       return;
     }
@@ -102,17 +118,20 @@ void ClienteChega(){
 
                                                     // Verifica horário de entrada
     if (H < 6 || H > 19) {
-      printf("ESTACIONAMENTO FECHADO!\n");
+      system(LIMPAR);
+      printf("\n   ESTACIONAMENTO FECHADO!\n");
       return;
     }
-    printf("Chegada registrada com sucesso!\n");
 
     HorasEntradas[H-6]++;
     strcpy(Estaciona[Vaga-1],Entrada);
+    system(LIMPAR);
 
-    }
-  else
+    printf("\n   CHEGADA REGISTRADA COM SUCESSO!\n\n");
+
+    } else {
     printf("\nERRO: Antes eh preciso abrir o caixa!\n");
+  }
 }
 
 void ClienteSai(){
@@ -125,6 +144,8 @@ void ClienteSai(){
   char HorarioSaida[6], HoraSaida[3], MinSaida[3];
   int HSaida, MSaida;
   
+  system(LIMPAR);
+
   printf("\n >>> Estacionamento <<< \n");
   printf(" >>>  Largas Vagas  <<< \n");
   printf("\n    SAIDA DE CLIENTE \n");   
@@ -148,14 +169,15 @@ void ClienteSai(){
         livre++;
         if (livre == 5)
         {
-          printf("ESSA VAGA TA LIVRE\n");
+          system(LIMPAR);
+          printf("\n    ESSA VAGA ESTÁ LIVRE\n");
           return;
         }
       }
     }
     
     //Teste
-    printf("\n>>>>>>>%s",Entrada);
+    // printf("\n>>>>>>>%s",Entrada);
    
     for (int i=0; i<7; i++)
       Placa[i] = toupper(Entrada[i]);
@@ -165,6 +187,7 @@ void ClienteSai(){
     Placa[7] = '\0';
 
     //Teste
+    system(LIMPAR);
     printf("\n>>>>>>>Placa: %s",Placa);
     
     Hora[0] = Entrada[8];
@@ -178,7 +201,7 @@ void ClienteSai(){
     
     //Teste
     printf("\n>>>>>>>Hora: %d",H);
-    printf("\n>>>>>>>Minutos: %d\n",M);
+    printf("\n>>>>>>>Minutos: %d\n\n",M);
     
                                                     // SEGUNDA QUESTÃO
 
@@ -196,18 +219,28 @@ void ClienteSai(){
 
     if (HSaida >= H) {
 
+      if (HSaida == H && MSaida <= M) {
+        system(LIMPAR);
+        printf("\n   HORÁRIO INVÁLIDO!\n");
+        return;
+      }
+
       if (MSaida > M) {
         HSaida++;
       }
+      
+      
 
       custo = (HSaida - H) * Valor;
 
-      printf("Valor a pagar: R$ %.2f\n", custo);
+      printf("\nValor a pagar: R$ %.2f\n", custo);
       printf("Valor pago: ");
       scanf("%f", &pago);
 
       troco = pago - custo;
 
+      system(LIMPAR);
+      
       if (troco < 0) {
         printf("Falta dinheiro!\n");
       } else {
@@ -216,14 +249,14 @@ void ClienteSai(){
         }
         
         strcpy(Estaciona[Vaga-1],"LIVRE");
-        printf("ESTACIONAMENTO LIBERADO!\n");
+        printf("\n   ESTACIONAMENTO LIBERADO!\n");
 
                                                     // Calculando o total acumulado
         Dinheiro += custo;
       }
       
     } else {
-      printf("Horário inválido!\n");
+      printf("\n   HORÁRIO INVÁLIDO!\n");
     }
 	
 	  }
@@ -233,25 +266,10 @@ void ClienteSai(){
 
 void FecharCaixa(){
   char Entrada[14];
+  
 
-                                                    // Mostra a quantidade de carros
-                                                    // que chegaram em cada 
-                                                    // intervalo de horarios
-  printf("\n");
-  for (int i = 0; i < 14; i++) {
-    printf("Horario %d às %d: %d\n", i+6, i+7, HorasEntradas[i]);
-    if (MaiorQtd < HorasEntradas[i] && MaiorHorario < i)
-    {
-      MaiorQtd = HorasEntradas[i];
-    }
-  }
-  printf("\n");
-
-  printf("Horario mais movimentado: %d horas\n", MaiorHorario+6);
-
-  printf("Saldo ao fim do dia: R$ %.2f\n", Dinheiro);
-
-                                                    // Acessa cada vaga
+                                                      // Acessa cada vaga
+  system(LIMPAR);
   for (int i = 0; i < 30; i++) {
     int livre = 0;
     int vago = 0;
@@ -265,15 +283,36 @@ void FecharCaixa(){
                                                     // Se a vaga não estiver
                                                     // livre, mostra ocupada
     if (livre != 5) {
-      printf("VAGA %d OCUPADA\n", i+1);
+      printf("\n   VAGA %d OCUPADA\n", i+1);
+      Op = 5;
     }
     
+  }
+
+                                                    // Mostra a quantidade de carros
+                                                    // que chegaram em cada 
+                                                    // intervalo de horarios
+  if (Op!=5)
+  {
+    printf("\n");
+    for (int i = 0; i < 14; i++) {
+      printf("Horario %02d às %02d: %d\n", i+6, i+7, HorasEntradas[i]);
+      if (MaiorQtd < HorasEntradas[i]) {
+        MaiorQtd = HorasEntradas[i];
+        MaiorHorario = i;
+      }
+    }
+    printf("\n");
+
+    printf("Horario mais movimentado: %02d horas\n", MaiorHorario+6);
+
+    printf("Saldo ao fim do dia: R$ %.2f\n", Dinheiro);
   }
   
 }
 
 int main(){
-  int Op;
+  system(LIMPAR);
   do{
     printf("\n >>> Estacionamento <<< \n");
     printf(" >>>  Largas Vagas  <<< \n");
