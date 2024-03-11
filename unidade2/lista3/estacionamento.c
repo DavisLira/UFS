@@ -20,6 +20,12 @@ char Estaciona[30][14];
 float Valor;
 char Responsavel[21], Iniciou = 0;
 
+                                                    // ARRAY AUXILIAR 3° QUESTAO
+                                                    // 14 horários de 6 às 20
+int HorasEntradas[14], MaiorQtd = 0, MaiorHorario = 0;
+const char LIVRE[5] = "LIVRE";
+float Dinheiro = 0;
+
 void AbrirCaixa(){
   printf("\n >>> Estacionamento <<< \n");
   printf(" >>>  Largas Vagas  <<< \n");
@@ -28,6 +34,12 @@ void AbrirCaixa(){
   for (int i=0; i<30; i++)
      strcpy(Estaciona[i],"LIVRE");
   
+                                                    // Iniciar os horários com 0
+  for (int i = 0; i < 14; i++)
+  {
+    HorasEntradas[i] = 0;
+  }
+
   printf("\nQual o valor do estacionamento por hora de uso? ");
   scanf("%f",&Valor);
   printf("Qual o nome do responsavel? ");
@@ -37,7 +49,7 @@ void AbrirCaixa(){
 }
 
 void ClienteChega(){
-  int Vaga;
+  int Vaga, H;
   char Placa[8], Hora[5], Entrada[14];
   
   printf("\n >>> Estacionamento <<< \n");
@@ -51,8 +63,29 @@ void ClienteChega(){
     printf("Qual a vaga ocupada? ");
     scanf("%d",&Vaga);
 
+                                                    // Verifica se a vaga solicitada
+                                                    // está livre ou ocupada
+    int livre = 0;
+    for (int i = 0; i < 5; i++) {
+      if (Estaciona[Vaga-1][i] == LIVRE[i]) {
+        livre++;
+      }
+    }
+
+    if (livre != 5) {
+      printf("ESSA VAGA ESTÁ OCUPADA\n");
+      return;
+    }
+
     printf("Qual a placa do veiculo [7 digitos]? ");
     scanf(" %7[^\n]s", Placa);
+
+                                                    // Verifica o tamanho da placa
+    if (strlen(Placa) != 7) {
+      printf("Erro ao ler a placa!\n");
+      return;
+    }
+    
     
     strcpy(Entrada,Placa);
 
@@ -61,8 +94,23 @@ void ClienteChega(){
 
     strcat(Entrada,"+");
     strcat(Entrada,Hora);
+    
+    Hora[0] = Entrada[8];
+    Hora[1] = Entrada[9];
+    Hora[2] = '\0';
+    H = atoi(Hora);
+
+                                                    // Verifica horário de entrada
+    if (H < 6 || H > 19) {
+      printf("ESTACIONAMENTO FECHADO!\n");
+      return;
+    }
+    printf("Chegada registrada com sucesso!\n");
+
+    HorasEntradas[H-6]++;
     strcpy(Estaciona[Vaga-1],Entrada);
-    printf("Chegada registrada com sucesso!\n");}
+
+    }
   else
     printf("\nERRO: Antes eh preciso abrir o caixa!\n");
 }
@@ -73,7 +121,6 @@ void ClienteSai(){
   int H, M; //hora, minuto e segundo
   
                                                     // ADIÇÃO DA 2° QUESTÃO
-  const char LIVRE[5] = "LIVRE";
   float custo, pago, troco;
   char HorarioSaida[6], HoraSaida[3], MinSaida[3];
   int HSaida, MSaida;
@@ -170,6 +217,9 @@ void ClienteSai(){
         
         strcpy(Estaciona[Vaga-1],"LIVRE");
         printf("ESTACIONAMENTO LIBERADO!\n");
+
+                                                    // Calculando o total acumulado
+        Dinheiro += custo;
       }
       
     } else {
@@ -182,6 +232,44 @@ void ClienteSai(){
 }
 
 void FecharCaixa(){
+  char Entrada[14];
+
+                                                    // Mostra a quantidade de carros
+                                                    // que chegaram em cada 
+                                                    // intervalo de horarios
+  printf("\n");
+  for (int i = 0; i < 14; i++) {
+    printf("Horario %d às %d: %d\n", i+6, i+7, HorasEntradas[i]);
+    if (MaiorQtd < HorasEntradas[i] && MaiorHorario < i)
+    {
+      MaiorQtd = HorasEntradas[i];
+    }
+  }
+  printf("\n");
+
+  printf("Horario mais movimentado: %d horas\n", MaiorHorario+6);
+
+  printf("Saldo ao fim do dia: R$ %.2f\n", Dinheiro);
+
+                                                    // Acessa cada vaga
+  for (int i = 0; i < 30; i++) {
+    int livre = 0;
+    int vago = 0;
+                                                    // Verifica se a vaga
+                                                    // está livre
+    for (int j = 0; j < 5; j++) {
+      if (Estaciona[i][j] == LIVRE[j]) {
+        livre++;
+      }
+    }
+                                                    // Se a vaga não estiver
+                                                    // livre, mostra ocupada
+    if (livre != 5) {
+      printf("VAGA %d OCUPADA\n", i+1);
+    }
+    
+  }
+  
 }
 
 int main(){
