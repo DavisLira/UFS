@@ -59,6 +59,85 @@ void SelecionaCaracteristica(float Matriz[][6],int *C){
   scanf("%d",&Op);
   *C=Op-1;};
               
+void AlteraDado(float Matriz[][6]) {
+  int freezer, caracteristica;
+  float valor;
+  SelecionaFreezer(Matriz, &freezer);
+  SelecionaCaracteristica(Matriz, &caracteristica);
+  printf("\nDigite o valor: ");
+  scanf("%f", &valor);
+  Matriz[caracteristica][freezer] = valor;
+  ExibeMatriz(Matriz, 4, 6);
+};
+
+void Melhor(char Texto[], float Valor, int Coluna) {
+  printf("Melhor %s: %6.1f\n\n", Texto, Valor);
+  
+
+  switch (Coluna)
+  {
+  case 0:
+    printf("Do freezer: Deia\n");
+    break;
+  case 1:
+    printf("Do freezer: Sul\n");
+    break;
+  case 2:
+    printf("Do freezer: NSul\n");
+    break;
+  case 3:
+    printf("Do freezer: Frio\n");
+    break;
+  case 4:
+    printf("Do freezer: Fri\n");
+    break;
+  case 5:
+    printf("Do freezer: Lux\n");
+    break;
+  
+  default:
+    break;
+  }
+}
+
+void Maior(float Matriz[0][6], char Texto[], int L, int C) {
+  float Valores[6];
+  float MaiorValor = 0;
+  int MaiorColuna = 0;
+  
+  for (int i = 0; i < C; i++) {
+    Valores[i] = Matriz[L][i];
+  }
+  
+  for (int i = 0; i < C; i++) {
+    if (MaiorValor < Valores[i]) {
+      MaiorValor = Valores[i];
+      MaiorColuna = i;
+    }
+  }
+
+  Melhor(Texto, MaiorValor, MaiorColuna);
+};
+
+void Menor(float Matriz[0][6], char Texto[], int L, int C) {
+  float Valores[6];
+  float MenorValor = 0;
+  int MenorColuna = 0;
+  
+  for (int i = 0; i < C; i++) {
+    Valores[i] = Matriz[L][i];
+  }
+  
+  for (int i = 0; i < C; i++) {
+    if (MenorValor > Valores[i]) {
+      MenorValor = Valores[i];
+      MenorColuna = i;
+    }
+  }
+
+  Melhor(Texto, MenorValor, MenorColuna);
+};
+
 int main(){
   do{
     printf("\n\n\n>>> Pesquisa Freezer <<<\n\n");
@@ -83,15 +162,15 @@ int main(){
       case 3: SelecionaCaracteristica(M,&Crc);
               ExibeLinha(M,Crc,6);
               break;
-      case 4: printf("\n_Altera Dado_");
+      case 4: AlteraDado(M);
               break; 
-      case 5: printf("\n_Melhor Freezer em Capacidade_");
+      case 5: Maior(M, "capacidade", 0, 6);
               break;
-      case 6: printf("\n_Melhor Freezer em Garantia_");
+      case 6: Maior(M, "garantia", 1, 6);
               break;
-      case 7: printf("\n_Melhor Freezer em Economia_");
+      case 7: Maior(M, "economia", 2, 6);
               break;
-      case 8: printf("\n_Melhor Freezer em Temperatura_");
+      case 8: Menor(M, "temperatura", 3, 6);
               break;
       case 9: break;}
       if (Op==9)
