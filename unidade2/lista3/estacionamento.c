@@ -200,9 +200,11 @@ void ClienteSai(){
     M = atoi(Min); // convete string em inteiro
     
     //Teste
-    printf("\n>>>>>>>Hora: %d",H);
-    printf("\n>>>>>>>Minutos: %d\n\n",M);
+    // printf("\n>>>>>>>Hora: %d",H);
+    // printf("\n>>>>>>>Minutos: %d\n\n",M);
     
+    printf("\n>>>>>>>Horario: %02d:%02d\n\n", H, M);
+
                                                     // SEGUNDA QUESTÃO
 
     printf("Qual o horario de saída [formato nn:nn]? ");
@@ -225,14 +227,25 @@ void ClienteSai(){
         return;
       }
 
+      int duracaoH = HSaida - H;
+      int duracaoM = MSaida - M;
+
       if (MSaida > M) {
         HSaida++;
       }
       
+      if (MSaida < M) {
+        duracaoH--;
+        duracaoM = 60 - M + MSaida;
+      }
       
+      if (HSaida == H) {
+        duracaoH = 0;
+      }
 
       custo = (HSaida - H) * Valor;
 
+      printf("\nVoce ficou %02d:%02d no estacionamento!", duracaoH, duracaoM);
       printf("\nValor a pagar: R$ %.2f\n", custo);
       printf("Valor pago: ");
       scanf("%f", &pago);
@@ -242,10 +255,10 @@ void ClienteSai(){
       system(LIMPAR);
       
       if (troco < 0) {
-        printf("Falta dinheiro!\n");
+        printf("\n   Falta dinheiro!\n");
       } else {
         if (troco > 0) {
-          printf("Seu troco: R$%.2f \n", troco);
+          printf("\n   Seu troco: R$%.2f \n", troco);
         }
         
         strcpy(Estaciona[Vaga-1],"LIVRE");
@@ -256,6 +269,7 @@ void ClienteSai(){
       }
       
     } else {
+      system(LIMPAR);
       printf("\n   HORÁRIO INVÁLIDO!\n");
     }
 	
