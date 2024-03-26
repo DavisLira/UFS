@@ -10,7 +10,8 @@ int bbinaria (char chave[20], int inicio, int fim, char vetor[][20]) {
     }
     else {
         int meio = (inicio + fim) / 2;
-        int resultado = strcmp(vetor[meio], chave);
+        // int resultado = strcmp(vetor[meio], chave);
+        int resultado = strcasecmp(vetor[meio], chave);
 
         if (resultado == 0){
             return meio;
