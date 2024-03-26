@@ -56,8 +56,8 @@ int main()
 {
     const int TAMANHO = 10;
     int listaCompleta[] = {5, 6, 2, 8, 9, 3, 1, 4, 7, 4};
+    // const int TAMANHO = 2;
     // int listaCompleta[] = {5, 6};
-    int listaFinal[TAMANHO];
     
     mergeSort(listaCompleta, TAMANHO);
 
