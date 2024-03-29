@@ -185,69 +185,77 @@ void AlteraDado(freezer vetor[6]) {
     ExibeTudo(vetor, 4, 6);
 };
 
-void Melhor(char Texto[], float Valor, int Coluna) {
-  printf("Melhor %s: %6.1f\n\n", Texto, Valor);
-  
+void MelhorAux(char Texto[], float Valor, int Coluna) {
+    system(LIMPAR);
+    printf("\nMelhor %s: %6.1f\n", Texto, Valor);
 
-  switch (Coluna)
-  {
-  case 0:
-    printf("Do freezer: Deia\n");
-    break;
-  case 1:
-    printf("Do freezer: Sul\n");
-    break;
-  case 2:
-    printf("Do freezer: NSul\n");
-    break;
-  case 3:
-    printf("Do freezer: Frio\n");
-    break;
-  case 4:
-    printf("Do freezer: Fri\n");
-    break;
-  case 5:
-    printf("Do freezer: Lux\n");
-    break;
-  
-  default:
-    break;
-  }
+    switch (Coluna)
+    {
+    case 0:
+        printf("Do freezer: Deia");
+        break;
+    case 1:
+        printf("Do freezer: Sul");
+        break;
+    case 2:
+        printf("Do freezer: NSul");
+        break;
+    case 3:
+        printf("Do freezer: Frio");
+        break;
+    case 4:
+        printf("Do freezer: Fri");
+        break;
+    case 5:
+        printf("Do freezer: Lux");
+        break;
+    
+    default:
+        break;
+    }
 }
 
-void Maior(freezer vetor[6], char Texto[], int L, int C) {
-  float Valores[6];
-  float MaiorValor = 0;
-  int MaiorColuna = 0;
+void Melhor(freezer vetor[6], char Texto[], int L, int C) {
+    float MelhorValor = 0;
+    int MelhorColuna = 0;
   
-  for (int i = 0; i < C; i++) {
-    if (MaiorValor < vetor[i].capacidade) {
-      MaiorValor = vetor[i].capacidade;
-      MaiorColuna = i;
+    switch (L) {
+    case 0:
+        for (int i = 0; i < C; i++) {
+            if (MelhorValor < vetor[i].capacidade) {
+            MelhorValor = vetor[i].capacidade;
+            MelhorColuna = i;
+            }
+        }
+        break;
+    case 1:
+        for (int i = 0; i < C; i++) {
+            if (MelhorValor < vetor[i].garantia) {
+            MelhorValor = vetor[i].garantia;
+            MelhorColuna = i;
+            }
+        }
+        break;
+    case 2:
+        for (int i = 0; i < C; i++) {
+            if (MelhorValor < vetor[i].economia) {
+            MelhorValor = vetor[i].economia;
+            MelhorColuna = i;
+            }
+        }
+        break;
+    case 3:
+        for (int i = 0; i < C; i++) {
+            if (MelhorValor > vetor[i].temperaturaMin) {
+            MelhorValor = vetor[i].temperaturaMin;
+            MelhorColuna = i;
+            }
+        }
+        break;
     }
-  }
 
-  Melhor(Texto, MaiorValor, MaiorColuna);
+  MelhorAux(Texto, MelhorValor, MelhorColuna);
 };
-
-// void Menor(float Matriz[0][6], char Texto[], int L, int C) {
-//   float Valores[6];
-//   float MenorValor = 0;
-//   int MenorColuna = 0;
-  
-//   for (int i = 0; i < C; i++) {
-//     Valores[i] = Matriz[L][i];
-//   }
-  
-//   for (int i = 0; i < C; i++) {
-//     if (MenorValor > Valores[i]) {
-//       MenorValor = Valores[i];
-//       MenorColuna = i;
-//     }
-//   }
-
-//   Melhor(Texto, MenorValor, MenorColuna);
-// };
 
 int main(){
   do{
@@ -275,14 +283,14 @@ int main(){
               break;
       case 4: AlteraDado(F);
               break; 
-    //   case 5: Maior(F, "capacidade", 0, 6);
-    //           break;
-    //   case 6: Maior(F, "garantia", 1, 6);
-    //           break;
-    //   case 7: Maior(F, "economia", 2, 6);
-    //           break;
-    //   case 8: Menor(F, "temperatura", 3, 6);
-    //           break;
+      case 5: Melhor(F, "capacidade", 0, 6);
+              break;
+      case 6: Melhor(F, "garantia", 1, 6);
+              break;
+      case 7: Melhor(F, "economia", 2, 6);
+              break;
+      case 8: Melhor(F, "temperatura", 3, 6);
+              break;
       case 9: break;}
       if (Op==9)
         break;}
