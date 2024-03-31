@@ -16,6 +16,7 @@ typedef struct RegMoto TpRegMoto;
 TpRegMoto VZonda[50];
 
 int Quant = -1;//Controla o preenchimento do vetor
+float dinheiro = 0;
 
 void SolicitaServico() {
 /* (1) Solicitar Serviço – quando se insere os dados supracitados, e também os campos status com valor zero sinalizando que o serviço ainda não foi feito, preço, também iniciado com zero.  Este deve estar em loop. */
@@ -56,29 +57,51 @@ int VerificaMoto(char placa[]) {
 void IniciaServico(){
 /*(2) Iniciar Serviço – quando o status de uma dada moto (placa) é iniciado pelo mecânico e o status para a ser um.*/
     char P[7];
+    float preco;
+    int resp;
 
     printf("Placa da moto para iniciar serviço: ");
     scanf(" %[^\n]s", P);
 
     // busca moto no serviço
     int Pos = VerificaMoto(P);
+    system("clear");
+    printf("\n\n >>> Motos Zonda <<< \n\n");
 
     if (Pos==-1) {
-        system("clear");
         printf("Moto não cadastrada!");
     } else {
-        system("clear");
         printf("\n Cliente %d: %s", Pos+1, VZonda[Pos].Nome);
         printf("\n Modelo: %s", VZonda[Pos].Modelo);
         printf("\n Placa: %s", VZonda[Pos].Placa);
         printf("\n Defeito: %s", VZonda[Pos].Defeito);
-        VZonda[Pos].Status = 1;
-        printf("\n Status: %d",VZonda[Pos].Status);
-        if (VZonda[Pos].Preco == 0) {
-            printf("\n Preco: NAO DEFINIDO");
-        } else {
-            printf("\n Preco: %.2f",VZonda[Pos].Preco);
+
+        printf("\n Custo do serviço: ");
+        scanf("%f", &preco);
+        VZonda[Pos].Preco = preco;
+        printf("\n Preco: %.2f\n",VZonda[Pos].Preco);
+        
+        printf("\n O cliente aceitou o valor? [1- SIM / 2- NAO]: ");
+        scanf("%d", &resp);
+
+        system("clear");
+        printf("\n\n >>> Motos Zonda <<< \n\n");
+        switch (resp) {
+        case 1:
+            printf("\n Status: %d",VZonda[Pos].Status);
+            printf("\n Serviço da moto iniciada!");
+            break;
+
+        case 2:
+            VZonda[Pos].Status = 2;
+            printf("\n Removida solicitação da moto!");
+            break;
+
+        default:
+            printf("\n Resposta inválida");
+            break;
         }
+        
     }
 }
 
@@ -95,13 +118,13 @@ void RemoverSolicitacao(){
     printf("\n\n >>> Motos Zonda <<< \n\n");
 
     if (Pos==-1) {
-        printf("Moto não cadastrada!");
+        printf(" Moto não cadastrada!");
     } else {
         if (VZonda[Pos].Status != 0) {
-            printf("Não é possível remover a moto!");
+            printf(" Não é possível remover a moto!");
         } else {
             VZonda[Pos].Status = 2;
-            printf("Solicitação removida com sucesso!");
+            printf(" Solicitação removida com sucesso!");
         }
     }
 }
@@ -113,7 +136,7 @@ void ConsultarSolicitacoes(){
     printf("\n\n >>> Motos Zonda <<< \n\n");
 
     if (Quant == -1) {
-        printf("Não há serviços cadastrados.");
+        printf(" Não há serviços cadastrados.");
     }
     else {
         for (int Cont = 0; Cont <= Quant; Cont++){
@@ -141,6 +164,29 @@ void ConsultarSolicitacoes(){
 } 
   
 void ConcluirServico(){
+    float custo, pago, troco;
+
+    system("clear");
+    printf("\n\n >>> Motos Zonda <<< \n\n");
+
+    printf("Valor pago: ");
+      scanf("%f", &pago);
+
+      troco = pago - custo;
+
+      system("clear");
+      
+      if (troco < 0) {
+        printf(" Falta dinheiro!\n");
+      } else {
+        if (troco > 0) {
+          printf(" Seu troco: R$%.2f \n", troco);
+        }
+        
+        printf(" Moto liberada!!\n");
+
+        dinheiro += custo;
+      }
 }
 
 void EncerrarExpediente(){
