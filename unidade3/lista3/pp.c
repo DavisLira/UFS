@@ -9,7 +9,7 @@ struct TpFarma{
 	char Nome[21];
 	float Preco;
 	int QEstoque;
-  };
+};
   
 typedef struct TpFarma TpFARMA;
 
@@ -95,7 +95,7 @@ void Excluir(){
         resp = toupper(resp);
 
         if (resp == 'S') {
-            RgFarma.QEstoque = -1;
+            RgFarma.QEstoque = 0;
             fseek(ArqFarma,-Tamanho,1);
             fwrite(&RgFarma,Tamanho,1,ArqFarma);
             printf(">>> Remocao efetuada com sucesso! <<<\n");
@@ -208,13 +208,15 @@ void LTodos(){
     printf("*** lista todos ***\n\n"); 
     fseek(ArqFarma,0,0);
     do {
-    	fread(&RgFarma,Tamanho,1,ArqFarma);
-    	if (!feof(ArqFarma) && RgFarma.QEstoque >= 0){
-    	    printf("Nome: %s\n",RgFarma.Nome);
+        fread(&RgFarma,Tamanho,1,ArqFarma);
+        if (!feof(ArqFarma)) {
+            printf("Nome: %s\n",RgFarma.Nome);
             printf("Valor: R$%.2f\n",RgFarma.Preco);
             printf("Estoque: %d\n",RgFarma.QEstoque);
-            printf("***\n\n");}}
-    while (!feof(ArqFarma));
+            printf("***\n\n");
+        }
+    } while (!feof(ArqFarma));
+
     //system("pause");
 }
 
