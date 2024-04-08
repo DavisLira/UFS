@@ -31,6 +31,9 @@ void Incluir() {
         printf("Nome: ");
         scanf("%s",Farmaco);
         int Achou=0;
+        char add;
+
+        fseek(ArqFarma, 0, SEEK_SET);
 
         do {
             fread(&RgFarma,Tamanho,1,ArqFarma);
@@ -48,6 +51,18 @@ void Incluir() {
             scanf("%d",&RgFarma.QEstoque);
             fseek(ArqFarma,0,2);
             fwrite(&RgFarma,Tamanho,1,ArqFarma);
+        } else if(RgFarma.QEstoque == 0) {
+            // Melhoria para adicionar excluído
+            printf("Esse fármaco está excluído!\n");       
+            printf("Deseja adicionar ao estoque? S/N ");
+            scanf(" %c",&add);
+            add = toupper(add);
+            if (add == 'S') {
+                printf("\nQuantidade: ");
+                scanf("%d",&RgFarma.QEstoque);
+                fseek(ArqFarma, -Tamanho, SEEK_CUR);
+                fwrite(&RgFarma, Tamanho, 1, ArqFarma);
+            }
         } else {
             printf("Esse fármaco ja esta salvo!\n");
         }
@@ -159,6 +174,7 @@ void Alterar() {
     return;
 }
 	
+// Melhoria para modos de edição
 void Editar(char modo){
     if (TArquivo()!=0){
         fclose(ArqFarma); //modo a + b
@@ -209,7 +225,7 @@ void LTodos(){
     fseek(ArqFarma,0,0);
     do {
         fread(&RgFarma,Tamanho,1,ArqFarma);
-        if (!feof(ArqFarma)) {
+        if (!feof(ArqFarma) && RgFarma.QEstoque>0) {
             printf("Nome: %s\n",RgFarma.Nome);
             printf("Valor: R$%.2f\n",RgFarma.Preco);
             printf("Estoque: %d\n",RgFarma.QEstoque);
