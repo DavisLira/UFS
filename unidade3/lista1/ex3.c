@@ -54,15 +54,16 @@ void mergeSort(int lista[], int tamanho) {
 
 int main()
 {
-    const int TAMANHO = 10;
-    int listaCompleta[] = {5, 6, 2, 8, 9, 3, 1, 4, 7, 4};
+    const int TAMANHO = 7;
+    int listaCompleta[] = {38, 27, 43, 3, 9, 82, 10};
+    // int listaCompleta[] = {5, 6, 2, 8, 9, 3, 1, 4, 7, 4};
     // const int TAMANHO = 2;
     // int listaCompleta[] = {5, 6};
     
     mergeSort(listaCompleta, TAMANHO);
 
     for (int i = 0; i < TAMANHO; i++) {
-        printf("*** %d ***\n", listaCompleta[i]);
+        printf("*** %2d ***\n", listaCompleta[i]);
     }
 
     return 0;
