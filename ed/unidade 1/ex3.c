@@ -29,6 +29,22 @@ char continuar(char resp) {
     return toupper(resp);
 }
 
+int ordemAlfabetica(const void *a, const void *b) {
+    const turma *aluno1 = (const turma *)a;
+    const turma *aluno2 = (const turma *)b;
+    return strcmp(aluno1->nome, aluno2->nome);
+}
+
+int ordemDaMedia(const void *a, const void *b) {
+    const turma *aluno1 = (const turma *)a;
+    const turma *aluno2 = (const turma *)b;
+    
+    if (aluno1->media < aluno2->media) return 1;
+    else if (aluno1->media > aluno2->media) return -1;
+    else return 0;
+}
+
+
 void main () 
 {
     char cont;
@@ -76,13 +92,20 @@ void main ()
         switch (opc)
         {
         case 1:
+            qsort(alunos, qtd, sizeof(turma), ordemAlfabetica);
+            break;
+        case 2:
+           qsort(alunos, qtd, sizeof(turma), ordemDaMedia);
             break;
         default:
             break;
         }
-        
+
         for (int i = 0; i < qtd; i++) {
-            printf("*** %s ***\n", alunos[i].nome);
+            printf("*** Nome: %s \n", alunos[i].nome);
+            printf("*** Matricula: %s \n", alunos[i].matricula);
+            printf("*** Média: %.2f \n", alunos[i].media);
+            printf("****************************\n");
         }
 
         printf("Quer fazer outra listagem? S – Sim ou N - Não.\n");
