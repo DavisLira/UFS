@@ -1,3 +1,6 @@
+// Guarde N números em um vetor alocado dinamicamente. Exiba a
+// média dos números lidos e os múltiplos de 6 digitados.
+
 #include <stdio.h>
 #include <stdlib.h>
 

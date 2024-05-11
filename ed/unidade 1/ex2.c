@@ -1,3 +1,8 @@
+// Crie um struct que guarde nome, idade e peso um atletas. Em um
+// vetor, alocado dinamicamente, guarde os dados de N atletas. Exiba uma
+// listagem dos dados dos atletas cadastrados. Ao final exiba a média dos
+// pesos e quantos atletas são menores de idade.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
