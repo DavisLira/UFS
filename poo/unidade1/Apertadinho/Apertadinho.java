@@ -34,6 +34,6 @@ public class Apertadinho {
 	}
 	
 	public void intervalo () {
-		System.err.println("O intervalo atual é de: " + this.min + " até " + this.max);
+		System.out.println("O intervalo atual é de: " + this.min + " até " + this.max);
 	}
 }
