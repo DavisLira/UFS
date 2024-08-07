@@ -13,7 +13,7 @@ typedef struct node
 typedef struct list
 {
     typeNode *tail;
-    int lenght;
+    int length;
 } typeList;
 
 void appendOnCircleList(typeList *list, char value[30])
@@ -39,12 +39,12 @@ void appendOnCircleList(typeList *list, char value[30])
         list->tail->nextNode = newNode;
         list->tail = newNode;
     } 
-    list->lenght++;
+    list->length++;
 }
 
 typeNode *sortNodeToRemove(typeList *list, typeNode **current, int totalSpins)
 {
-    if (current == NULL || list->lenght < 2)
+    if (current == NULL || list->length < 2)
     {
         printf("Lista deve conter pelo menos 2 elementos para spin de remoção");
         return NULL;
@@ -56,8 +56,11 @@ typeNode *sortNodeToRemove(typeList *list, typeNode **current, int totalSpins)
     {
         printf("passando por: %s\n", sorted->name);
         sorted = sorted->nextNode;
-        *(current) = sorted->nextNode;
     }
+    
+    printf("passando por: %s\n", sorted->name);
+    
+    *current = sorted->nextNode;
 
     return sorted;
 }
@@ -67,7 +70,7 @@ void removeNodeFromCircleList(typeList *list, typeNode *removing)
     typeNode *newTail = list->tail;
 
     if (removing == list->tail) {
-        for (int i = 0; i < list->lenght-1; i++)
+        for (int i = 0; i < list->length-1; i++)
         {
             newTail = newTail->nextNode;
         }
@@ -89,19 +92,25 @@ void removeNodeFromCircleList(typeList *list, typeNode *removing)
         free(toRemove);
     }
 
-    list->lenght--;
+    list->length--;
 }
 
 void showList(typeList *list)
 {
-    typeNode *current = list->tail;
+    if (list->tail == NULL)
+    {
+        printf("Lista vazia\n");
+        return;
+    }
 
-    for (int i = 0; i < list->lenght; i++)
+    typeNode *current = list->tail->nextNode;
+
+    for (int i = 0; i < list->length; i++)
     {
         printf("%s", current->name);
         current = current->nextNode;
 
-        if (i != list->lenght-1) {
+        if (i != list->length - 1) {
             printf(", ");
         }
     }
@@ -117,7 +126,7 @@ int main()
     srand(time(NULL));
 
     clientsList->tail = NULL;
-    clientsList->lenght = 0;
+    clientsList->length = 0;
 
     do 
     {
@@ -125,7 +134,7 @@ int main()
         scanf("%hd", &clientsNumber);
 
         if (clientsNumber < 2) 
-            printf("A premiação deve ter pelo menos 1 cliente.\n");
+            printf("A premiação deve ter pelo menos 2 clientes.\n");
 
         
     } while (clientsNumber < 2);
@@ -146,13 +155,12 @@ int main()
         appendOnCircleList(clientsList, clientName);
     }
 
-    showList(clientsList);
+    typeNode *currentSorting = clientsList->tail->nextNode;
 
-    typeNode *currentSorting = clientsList->tail;
-
-    while (clientsList->lenght > 1)
+    while (clientsList->length > 1)
     {
-        short totalOfSpins = (rand() % (clientsList->lenght - 1 + 1)) + 1;
+        short totalOfSpins = (rand() % (clientsList->length - 1 + 1)) + 1;
+        showList(clientsList);
         printf("Começando com: %s\n", currentSorting->name);
         printf("Número sorteado: %d\n", totalOfSpins);
         typeNode *removed = sortNodeToRemove(clientsList, &currentSorting, totalOfSpins);
@@ -164,11 +172,8 @@ int main()
         showList(clientsList);
     }
 
-
-
-    
-
     printf("\n%s ganhou!\n", clientsList->tail->name);
 
+    free(clientsList);
     return EXIT_SUCCESS;
 }
