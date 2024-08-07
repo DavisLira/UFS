@@ -40,8 +40,6 @@ void appendOnCircleList(typeList *list, char value[30])
         list->tail = newNode;
     } 
     list->lenght++;
-
-    printf("Head: %s\n", list->tail->name);
 }
 
 typeNode *sortNodeToRemove(typeList *list, typeNode **current, int totalSpins)
@@ -52,10 +50,11 @@ typeNode *sortNodeToRemove(typeList *list, typeNode **current, int totalSpins)
         return NULL;
     }
 
-    typeNode *sorted = (*current)->nextNode;
+    typeNode *sorted = *current;
     
-    for (short i = 0; i <= totalSpins; i++)
+    for (short i = 1; i < totalSpins; i++)
     {
+        printf("passando por: %s\n", sorted->name);
         sorted = sorted->nextNode;
         *(current) = sorted->nextNode;
     }
@@ -99,8 +98,12 @@ void showList(typeList *list)
 
     for (int i = 0; i < list->lenght; i++)
     {
-        printf(" - %s -", current->name);
+        printf("%s", current->name);
         current = current->nextNode;
+
+        if (i != list->lenght-1) {
+            printf(", ");
+        }
     }
     printf("\n");
 }
@@ -133,7 +136,7 @@ int main()
     {
         char clientName[30];
 
-        printf("Nome do cliente %d: ", i + 1);
+        printf("Nome do %d° cliente: ", i + 1);
         fgets(clientName, sizeof(clientName), stdin);
 
         short len = strlen(clientName);
@@ -150,16 +153,22 @@ int main()
     while (clientsList->lenght > 1)
     {
         short totalOfSpins = (rand() % (clientsList->lenght - 1 + 1)) + 1;
+        printf("Começando com: %s\n", currentSorting->name);
+        printf("Número sorteado: %d\n", totalOfSpins);
         typeNode *removed = sortNodeToRemove(clientsList, &currentSorting, totalOfSpins);
 
-        printf("%s perdeu... rodando de novo! \n\n", removed->name);
+        printf("\n%s perdeu... rodando de novo! \n", removed->name);
         removeNodeFromCircleList(clientsList, removed);
 
-        printf("Lista atual: ");
+        printf("Clientes na roda: ");
         showList(clientsList);
     }
 
-    printf("\nÚltimo: %s\n", clientsList->tail->name);
+
+
+    
+
+    printf("\n%s ganhou!\n", clientsList->tail->name);
 
     return EXIT_SUCCESS;
 }
