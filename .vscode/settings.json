@@ -7,5 +7,25 @@
         "ctype.h": "c",
         "stdbool.h": "c"
     },
-    "C_Cpp.errorSquiggles": "enabledIfIncludesResolve"
-}
+    "C_Cpp.errorSquiggles": "enabledIfIncludesResolve",
+    "IDX.aI.enableInlineCompletion": true,
+    "IDX.aI.enableCodebaseIndexing": true,
+    "workbench.colorTheme": "Min Dark",
+    "symbols.hidesExplorerArrows": false,
+    "workbench.iconTheme": "symbols",
+    "editor.fontFamily": "JetBrains Mono",
+    "editor.fontSize": 14,
+    "editor.lineHeight": 1.6,
+    "editor.rulers": [80,120],
+    "editor.renderLineHighlight": "gutter",
+    "editor.fontLigatures": true,
+    "explorer.compactFolders": false,
+    "editor.semanticHighlighting.enabled": false,
+    "terminal.integrated.fontSize": 14,
+    "explorer.confirmDragAndDrop": false,
+    "editor.stickyScroll.enabled": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "window.commandCenter": false,
+    "workbench.layoutControl.enabled": false,
+    "editor.minimap.showSlider": "always",
+} 
