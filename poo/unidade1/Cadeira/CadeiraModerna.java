@@ -4,7 +4,7 @@ public class CadeiraModerna extends Cadeira {
     private String tronco;
     private boolean rodinhas = true;
 
-    public CadeiraModerna(int numPernas, String material, String cor, String tronco, boolean rodinhas) {
+    public CadeiraModerna(int numPernas, String material, String cor, String tronco) {
         super(numPernas, material, cor);
         this.tronco = tronco;
     }

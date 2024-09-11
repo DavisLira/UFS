@@ -23,4 +23,13 @@ public abstract class Cadeira {
     public String getCor() {
         return cor;
     }
+
+    @Override
+    public String toString() {
+        return "Cadeira{" +
+                "numero De Pernas=" + numPernas +
+                ", material='" + material + '\'' +
+                ", cor='" + cor + '\'' +
+                '}';
+    }
 }

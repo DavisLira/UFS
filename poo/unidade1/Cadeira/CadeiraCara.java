@@ -11,4 +11,11 @@ public class CadeiraCara extends Cadeira {
     public boolean isEstofado() {
         return estofado;
     }
+
+    @Override
+    public String toString() {
+        return "Cadeira Cara {" + "numeroDePernas=" + getNumPernas() +
+                ", material= '" + getMaterial() + "'" + ", cor='" + getCor() + "'" +
+                ", estofado= " + estofado + " }";
+    }
 }
