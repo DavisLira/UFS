@@ -7,6 +7,7 @@
   # Use https://search.nixos.org/packages to find packages
   packages = [
     pkgs.gcc
+    pkgs.temurin-bin-21
     # pkgs.go
     # pkgs.python311
     # pkgs.python311Packages.pip
