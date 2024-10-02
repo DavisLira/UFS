@@ -70,7 +70,7 @@ void rotacaoDireita(tipoArvore *arvore, tipoNo *no) {
 }
 
 
-void verificarCorrecoes(tipoArvore *arvore, tipoNo *no) {
+void verificarCorrecoesInsercao(tipoArvore *arvore, tipoNo *no) {
     // Caso raiz seja Rubro, vira negra
     if (no == arvore->raiz && no->cor == 1) {
         printf("Raiz (%d) virou negro\n\n", no->valor);
@@ -107,7 +107,7 @@ void verificarCorrecoes(tipoArvore *arvore, tipoNo *no) {
         printf("O avô (%d) de (%d) virou rubro\n\n", avo->valor, no->valor);
         avo->cor = 1; // o avo vira rubro
 
-        verificarCorrecoes(arvore, avo); // Continuar verificando o avô
+        verificarCorrecoesInsercao(arvore, avo); // Continuar verificando o avô
     } else {
         // Caso 3: O tio é negro (ou NULL)
 
@@ -179,9 +179,96 @@ void criarNo(tipoArvore *arvore, int valor) {
 
     arvore->raiz = inserirNo(arvore->raiz, novo);
 
-    verificarCorrecoes(arvore, novo);
+    verificarCorrecoesInsercao(arvore, novo);
 
     return;
+}
+
+tipoNo* minimo(tipoNo* no) {
+    // Encontra o menor valor na subárvore à direita
+    while (no->esq != NULL) {
+        no = no->esq;
+    }
+    return no;
+}
+
+void substituirNo(tipoArvore *arvore, tipoNo *no, tipoNo *filho) {
+    if (no->pai == NULL) {
+        // Se o nó removido é a raiz
+        arvore->raiz = filho;
+    } else if (no == no->pai->esq) {
+        no->pai->esq = filho;
+    } else {
+        no->pai->dir = filho;
+    }
+    
+    if (filho != NULL) {
+        filho->pai = no->pai;
+    }
+}
+
+
+tipoNo* buscarNo(tipoNo *raiz, int valor) {
+    // Se o nó for NULL, o valor não está na árvore
+    if (raiz == NULL) {
+        return NULL;
+    }
+
+    // Se o valor procurado for menor, vá para a subárvore esquerda
+    if (valor < raiz->valor) {
+        return buscarNo(raiz->esq, valor);
+    }
+    // Se o valor procurado for maior, vá para a subárvore direita
+    else if (valor > raiz->valor) {
+        return buscarNo(raiz->dir, valor);
+    }
+
+    // Se for igual, o nó foi encontrado
+    return raiz;
+}
+
+void verificarCorrecoesRemocao(tipoNo *no) {
+
+}
+
+void removerNo(tipoArvore *arvore, int valor) {
+    if (arvore->raiz == NULL) {
+        printf("Árvore vazia!\n");
+        return;
+    }
+
+    // Buscar o nó com o valor fornecido
+    tipoNo *no = buscarNo(arvore->raiz, valor);
+
+    // Nó não encontrado
+    if (no == NULL) {
+        printf("Valor %d não encontrado na árvore!\n", valor);
+        return;
+    }
+
+    // Imprime o valor do nó que será removido
+    printf("Nó a ser removido = %d\n", no->valor);
+
+    tipoNo *substituto;
+    if (no->esq == NULL) {
+        // Caso 1: O nó não tem filho esquerdo
+        substituto = no->dir;
+        substituirNo(arvore, no, substituto);
+    } else if (no->dir == NULL) {
+        // Caso 2: O nó não tem filho direito
+        substituto = no->esq;
+        substituirNo(arvore, no, substituto);
+    } else {
+        // Caso 3: O nó tem dois filhos
+        tipoNo *sucessor = minimo(no->dir);  // Encontra o sucessor
+        no->valor = sucessor->valor;  // Substitui o valor do nó pelo sucessor
+        removerNo(arvore, sucessor->valor);  // Remove o sucessor
+    }
+
+    printf("removendo (%d) \n\n", no->valor);
+    
+    free(no);  // Libera a memória do nó removido
+    verificarCorrecoesRemocao(substituto);  // Verifica as correções da árvore
 }
 
 // Mostrando no sentido LNR
@@ -232,7 +319,9 @@ int main() {
                 break;
 
             case 2:
-                printf("Ainda nao remove/n/n");
+                printf("Digite o valor a ser removido: ");
+                scanf("%d", &valor);
+                removerNo(&arvore, valor);
                 break;
 
             case 3:
