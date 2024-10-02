@@ -44,7 +44,7 @@ void rotacaoDireita(tipoArvore *arvore, tipoNo *no) {
     
     no->esq = esq->dir; // Filho direito de esq vira o filho esquerdo do nó
 
-    // Se o filho direito de esq existir, atualize seu pai para no
+    // Se o filho direito de esq existir, atualize seu pai para nó
     if (esq->dir != NULL) {
         esq->dir->pai = no;
     }
@@ -115,10 +115,12 @@ void verificarCorrecoes(tipoArvore *arvore, tipoNo *no) {
         // pai é filho da esquerda do avo
         if (no == no->pai->dir && no->pai == avo->esq) {
             // Rotação para a esquerda no pai
+            printf("Rotacionando pai (%d) para esquerda\n", no->pai->valor);
             rotacaoEsquerda(arvore, no->pai);
             no = no->esq;  // Ajuste do novo nó
         } else if (no == no->pai->esq && no->pai == avo->dir) {
             // Rotação para a direita no pai
+            printf("Rotacionando pai (%d) para direita\n", no->pai->valor);
             rotacaoDireita(arvore, no->pai);
             no = no->dir;  // Ajuste do novo nó
         }
@@ -126,16 +128,19 @@ void verificarCorrecoes(tipoArvore *arvore, tipoNo *no) {
         // Caso 3 (continuação): Rotação simples
         if (no == no->pai->esq) {
             // se o nó é filho da esquerda do pai, rotação para a direita no avo
-            printf("Rotacionando avô para direita\n");
+            printf("Rotacionando avô (%d) para direita\n", avo->valor);
             rotacaoDireita(arvore, avo);
         } else {
             // se o nó é filho da direita do pai, rotação para a esquerda no avo
-            printf("Rotacionando avô para esquerda\n");
+            printf("Rotacionando avô (%d) para esquerda\n", avo->valor);
             rotacaoEsquerda(arvore, avo);
         }
 
         // Ajustar as cores após a rotação
+        printf("Pai (%d) virou negro\n", no->pai->valor);
         no->pai->cor = 0;
+
+        printf("Avô (%d) virou rubro\n", avo->valor);
         avo->cor = 1;
     }
 }
