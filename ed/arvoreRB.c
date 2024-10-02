@@ -227,9 +227,73 @@ tipoNo* buscarNo(tipoNo *raiz, int valor) {
     return raiz;
 }
 
-void verificarCorrecoesRemocao(tipoNo *no) {
+void verificarCorrecoesRemocao(tipoArvore *arvore, tipoNo *no) {
+    while (no != arvore->raiz && no->cor == 0) {
+        if (no == no->pai->esq) {
+            tipoNo *irmao = no->pai->dir;
 
+            // Caso 1: O irmão do nó é rubro
+            if (irmao->cor == 1) {
+                irmao->cor = 0;
+                no->pai->cor = 1;
+                rotacaoEsquerda(arvore, no->pai);
+                irmao = no->pai->dir;
+            }
+
+            // Caso 2: O irmão e os filhos do irmão são negros
+            if (irmao->esq->cor == 0 && irmao->dir->cor == 0) {
+                irmao->cor = 1;
+                no = no->pai;
+            } else {
+                // Caso 3: O irmão é negro, e o filho esquerdo é rubro
+                if (irmao->dir->cor == 0) {
+                    irmao->esq->cor = 0;
+                    irmao->cor = 1;
+                    rotacaoDireita(arvore, irmao);
+                    irmao = no->pai->dir;
+                }
+
+                // Caso 4: O irmão é negro, e o filho direito é rubro
+                irmao->cor = no->pai->cor;
+                no->pai->cor = 0;
+                irmao->dir->cor = 0;
+                rotacaoEsquerda(arvore, no->pai);
+                no = arvore->raiz;
+            }
+        } else {
+            // Casos simétricos para o irmão à esquerda
+            tipoNo *irmao = no->pai->esq;
+
+            if (irmao->cor == 1) {
+                irmao->cor = 0;
+                no->pai->cor = 1;
+                rotacaoDireita(arvore, no->pai);
+                irmao = no->pai->esq;
+            }
+
+            if (irmao->esq->cor == 0 && irmao->dir->cor == 0) {
+                irmao->cor = 1;
+                no = no->pai;
+            } else {
+                if (irmao->esq->cor == 0) {
+                    irmao->dir->cor = 0;
+                    irmao->cor = 1;
+                    rotacaoEsquerda(arvore, irmao);
+                    irmao = no->pai->esq;
+                }
+
+                irmao->cor = no->pai->cor;
+                no->pai->cor = 0;
+                irmao->esq->cor = 0;
+                rotacaoDireita(arvore, no->pai);
+                no = arvore->raiz;
+            }
+        }
+    }
+
+    no->cor = 0;
 }
+
 
 void removerNo(tipoArvore *arvore, int valor) {
     if (arvore->raiz == NULL) {
@@ -250,6 +314,8 @@ void removerNo(tipoArvore *arvore, int valor) {
     printf("Nó a ser removido = %d\n", no->valor);
 
     tipoNo *substituto;
+    int corOriginal = no->cor;  // Armazenar a cor original para verificação posterior
+
     if (no->esq == NULL) {
         // Caso 1: O nó não tem filho esquerdo
         substituto = no->dir;
@@ -261,14 +327,33 @@ void removerNo(tipoArvore *arvore, int valor) {
     } else {
         // Caso 3: O nó tem dois filhos
         tipoNo *sucessor = minimo(no->dir);  // Encontra o sucessor
-        no->valor = sucessor->valor;  // Substitui o valor do nó pelo sucessor
-        removerNo(arvore, sucessor->valor);  // Remove o sucessor
+        corOriginal = sucessor->cor;         // Atualiza a cor original para o sucessor
+        substituto = sucessor->dir;          // O substituto pode ser NULL ou um filho direito
+        
+        if (sucessor->pai == no) {
+            if (substituto != NULL) {
+                substituto->pai = sucessor;
+            }
+        } else {
+            substituirNo(arvore, sucessor, substituto);
+            sucessor->dir = no->dir;
+            sucessor->dir->pai = sucessor;
+        }
+
+        substituirNo(arvore, no, sucessor);
+        sucessor->esq = no->esq;
+        sucessor->esq->pai = sucessor;
+        sucessor->cor = no->cor;  // Sucessor herda a cor do nó removido
     }
 
     printf("removendo (%d) \n\n", no->valor);
     
     free(no);  // Libera a memória do nó removido
-    verificarCorrecoesRemocao(substituto);  // Verifica as correções da árvore
+
+    // Somente realizar correções se o nó removido ou o sucessor eram negros
+    if (corOriginal == 0 && substituto != NULL) {
+        verificarCorrecoesRemocao(arvore, substituto);
+    }
 }
 
 // Mostrando no sentido LNR
