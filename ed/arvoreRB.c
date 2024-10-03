@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define NEGRO = 0;
+#define RUBRO = 1
+
 typedef struct no {
     int valor;
     struct no *pai, *esq, *dir;
@@ -72,14 +75,14 @@ void rotacaoDireita(tipoArvore *arvore, tipoNo *no) {
 
 void verificarCorrecoesInsercao(tipoArvore *arvore, tipoNo *no) {
     // Caso raiz seja Rubro, vira negra
-    if (no == arvore->raiz && no->cor == 1) {
+    if (no == arvore->raiz && no->cor == RUBRO) {
         printf("Raiz (%d) virou negro\n\n", no->valor);
         no->cor = 0;
         return;
     }
 
     // Caso 1: Se o pai do nó é negro, não há violação
-    if (no->pai == NULL || no->pai->cor == 0) {
+    if (no->pai == NULL || no->pai->cor == NEGRO) {
         printf("Não precisa de correção!\n");
         return;
     }
@@ -97,15 +100,15 @@ void verificarCorrecoesInsercao(tipoArvore *arvore, tipoNo *no) {
     tipoNo *tio = (no->pai == avo->esq) ? avo->dir : avo->esq;
 
     // Caso 2: O pai e o tio são rubros
-    if (tio != NULL && tio->cor == 1) {
+    if (tio != NULL && tio->cor == RUBRO) {
         printf("O pai (%d) de (%d) virou negro\n", no->pai->valor, no->valor);
-        no->pai->cor = 0; // o pai vira negro
+        no->pai->cor = NEGRO; // o pai vira negro
 
         printf("O tio (%d) de (%d) virou negro\n", tio->valor, no->valor);
-        tio->cor = 0; // o tio vira negro
+        tio->cor = NEGRO; // o tio vira negro
 
         printf("O avô (%d) de (%d) virou rubro\n\n", avo->valor, no->valor);
-        avo->cor = 1; // o avo vira rubro
+        avo->cor = RUBRO; // o avo vira rubro
 
         verificarCorrecoesInsercao(arvore, avo); // Continuar verificando o avô
     } else {
@@ -138,10 +141,10 @@ void verificarCorrecoesInsercao(tipoArvore *arvore, tipoNo *no) {
 
         // Ajustar as cores após a rotação
         printf("Pai (%d) virou negro\n", no->pai->valor);
-        no->pai->cor = 0;
+        no->pai->cor = NEGRO;
 
         printf("Avô (%d) virou rubro\n", avo->valor);
-        avo->cor = 1;
+        avo->cor = RUBRO;
     }
 }
 
@@ -168,7 +171,7 @@ void criarNo(tipoArvore *arvore, int valor) {
     novo->valor = valor;
     novo->esq = NULL;
     novo->dir = NULL;
-    novo->cor = 1;
+    novo->cor = RUBRO;
     novo->pai = NULL;
 
     printf("\n\nCriando nó (%d) RUBRO\n", valor);
@@ -228,35 +231,35 @@ tipoNo* buscarNo(tipoNo *raiz, int valor) {
 }
 
 void verificarCorrecoesRemocao(tipoArvore *arvore, tipoNo *no) {
-    while (no != arvore->raiz && no->cor == 0) {
+    while (no != arvore->raiz && no->cor == NEGRO) {
         if (no == no->pai->esq) {
             tipoNo *irmao = no->pai->dir;
 
             // Caso 1: O irmão do nó é rubro
-            if (irmao->cor == 1) {
-                irmao->cor = 0;
-                no->pai->cor = 1;
+            if (irmao->cor == RUBRO) {
+                irmao->cor = NEGRO;
+                no->pai->cor = RUBRO;
                 rotacaoEsquerda(arvore, no->pai);
                 irmao = no->pai->dir;
             }
 
             // Caso 2: O irmão e os filhos do irmão são negros
-            if (irmao->esq->cor == 0 && irmao->dir->cor == 0) {
-                irmao->cor = 1;
+            if (irmao->esq->cor == NEGRO && irmao->dir->cor == NEGRO) {
+                irmao->cor = RUBRO;
                 no = no->pai;
             } else {
                 // Caso 3: O irmão é negro, e o filho esquerdo é rubro
-                if (irmao->dir->cor == 0) {
-                    irmao->esq->cor = 0;
-                    irmao->cor = 1;
+                if (irmao->dir->cor == NEGRO) {
+                    irmao->esq->cor = NEGRO;
+                    irmao->cor = RUBRO;
                     rotacaoDireita(arvore, irmao);
                     irmao = no->pai->dir;
                 }
 
                 // Caso 4: O irmão é negro, e o filho direito é rubro
                 irmao->cor = no->pai->cor;
-                no->pai->cor = 0;
-                irmao->dir->cor = 0;
+                no->pai->cor = NEGRO;
+                irmao->dir->cor = NEGRO;
                 rotacaoEsquerda(arvore, no->pai);
                 no = arvore->raiz;
             }
@@ -264,34 +267,34 @@ void verificarCorrecoesRemocao(tipoArvore *arvore, tipoNo *no) {
             // Casos simétricos para o irmão à esquerda
             tipoNo *irmao = no->pai->esq;
 
-            if (irmao->cor == 1) {
-                irmao->cor = 0;
-                no->pai->cor = 1;
+            if (irmao->cor == RUBRO) {
+                irmao->cor = NEGRO;
+                no->pai->cor = RUBRO;
                 rotacaoDireita(arvore, no->pai);
                 irmao = no->pai->esq;
             }
 
-            if (irmao->esq->cor == 0 && irmao->dir->cor == 0) {
-                irmao->cor = 1;
+            if (irmao->esq->cor == NEGRO && irmao->dir->cor == NEGRO) {
+                irmao->cor = RUBRO;
                 no = no->pai;
             } else {
-                if (irmao->esq->cor == 0) {
-                    irmao->dir->cor = 0;
-                    irmao->cor = 1;
+                if (irmao->esq->cor == NEGRO) {
+                    irmao->dir->cor = NEGRO;
+                    irmao->cor = RUBRO;
                     rotacaoEsquerda(arvore, irmao);
                     irmao = no->pai->esq;
                 }
 
                 irmao->cor = no->pai->cor;
-                no->pai->cor = 0;
-                irmao->esq->cor = 0;
+                no->pai->cor = NEGRO;
+                irmao->esq->cor = NEGRO;
                 rotacaoDireita(arvore, no->pai);
                 no = arvore->raiz;
             }
         }
     }
 
-    no->cor = 0;
+    no->cor = NEGRO;
 }
 
 
@@ -351,7 +354,7 @@ void removerNo(tipoArvore *arvore, int valor) {
     free(no);  // Libera a memória do nó removido
 
     // Somente realizar correções se o nó removido ou o sucessor eram negros
-    if (corOriginal == 0 && substituto != NULL) {
+    if (corOriginal == NEGRO && substituto != NULL) {
         verificarCorrecoesRemocao(arvore, substituto);
     }
 }
@@ -361,7 +364,7 @@ void mostrarNo(tipoArvore *arvore, tipoNo* no, int linha) {
     if (no != NULL) {
         mostrarNo(arvore, no->esq, linha+1);  // Exibir a subárvore esquerda
         printf("Valor: %d\n", no->valor);
-        printf("Cor: %s\n", no->cor == 1 ? "RUBRO" : "NEGRO");
+        printf("Cor: %s\n", no->cor == RUBRO ? "RUBRO" : "NEGRO");
         printf("Linha: %d\n", linha);
         if (no == arvore->raiz){
             printf("Raiz!\n");
