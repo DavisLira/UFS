@@ -259,8 +259,6 @@ void substituirNo(tipoArvore *arvore, tipoNo *noVelho, tipoNo *noNovo) {
     }
 
     printf("Substituindo (%d) por (%d)!\n\n", noVelho->valor, noNovo->valor);
-
-    printf("Algo deu errado na substituição!\n\n");
 }
 
 tipoNo* buscarNo(tipoNo *raiz, int valor) {
@@ -480,7 +478,7 @@ void removerNo(tipoArvore *arvore, int valor) {
 
     if (corOriginal == NEGRO && substituto->cor == RUBRO) {
         substituto->cor = NEGRO;
-    } else {
+    } else if (corOriginal == NEGRO) {
         verificarCorrecoesRemocao(arvore, substituto);
     }
 
