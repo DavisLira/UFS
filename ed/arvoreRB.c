@@ -288,16 +288,10 @@ void verificarCorrecoesRemocao(tipoArvore *arvore, tipoNo *no) {
         return;
     }
 
-    if (no != NULL) {
-        printf("verificando correção de (%d)\n", no->valor);
-    } else {
-        printf("verificando correção de NULL\n");
-    }
-
     while (no != arvore->raiz && no->cor == NEGRO) {
         // Nó é filho esquerdo
         if (no == no->pai->esq) {
-            printf("O substituto é filho esquerdo");
+            printf("O substituto é filho esquerdo\n");
             tipoNo *irmao = no->pai->dir;
 
             // Caso 1: O irmão do nó é rubro
@@ -445,13 +439,21 @@ void removerNo(tipoArvore *arvore, int valor) {
     if (noRemovido->esq == NULL && noRemovido->dir == NULL) {
         printf("(%d) não tem filhos\n", noRemovido->valor);
         printf("(%d) é folha e negro\n", noRemovido->valor);
-        substituirNo(arvore, noRemovido, NULL);
         tipoNo *noFantasma = criarNoNegroNulo(arvore);
         noFantasma->pai = noRemovido->pai;
         noFantasma->esq = noRemovido->esq;
         noFantasma->dir = noRemovido->dir;
         noFantasma->cor = NEGRO;
+        substituirNo(arvore, noRemovido, noFantasma);
         verificarCorrecoesRemocao(arvore, noFantasma);
+        noFantasma->esq = NULL;
+        noFantasma->dir = NULL;
+        if (noFantasma->pai->esq == noFantasma) {
+            noFantasma->pai->esq = NULL;
+        } else {
+            noFantasma->pai->dir = NULL;
+        }
+        noFantasma->pai = NULL;
         free(noFantasma);
         free(noRemovido);
         return;
