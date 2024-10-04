@@ -476,10 +476,11 @@ void removerNo(tipoArvore *arvore, int valor) {
     }
 
     printf("Substituto = %d\n", substituto->valor);
+    substituirNo(arvore, noRemovido, substituto);
 
     if (corOriginal == NEGRO && substituto->cor == RUBRO) {
         substituto->cor = NEGRO;
-    } else if (corOriginal == NEGRO) {
+    } else {
         verificarCorrecoesRemocao(arvore, substituto);
     }
 
