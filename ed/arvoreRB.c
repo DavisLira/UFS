@@ -229,9 +229,28 @@ void substituirNo(tipoArvore *arvore, tipoNo *noVelho, tipoNo *noNovo) {
     // caso 2: no velho é raiz
     if (noVelho->pai == NULL) {
         arvore->raiz = noNovo;
+
+        if(noNovo == noNovo->pai->esq) {
+            if (noNovo->dir != NULL) {
+                noNovo->pai->esq = noNovo->dir;
+                noNovo->pai->esq->cor = NEGRO;
+            } else {
+                noNovo->pai->esq = noNovo->esq;
+                noNovo->pai->esq->cor = NEGRO;
+            }
+        } else {
+            if (noNovo->dir != NULL) {
+                noNovo->pai->dir = noNovo->dir;
+                noNovo->pai->esq->cor = NEGRO;
+            } else {
+                noNovo->pai->dir = noNovo->esq;
+                noNovo->pai->esq->cor = NEGRO;
+            }
+        }
+
         noNovo->pai = NULL;
-        noNovo->esq = NULL;
-        noNovo->dir = NULL;
+        noNovo->esq = noVelho->esq;
+        noNovo->dir = noVelho->dir;
         printf("Substituindo (%d) por (%d)!\n\n", noVelho->valor, noNovo->valor);
         return;
     }
