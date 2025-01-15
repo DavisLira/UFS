@@ -6,6 +6,7 @@
 using namespace std;
 
 struct Container {
+    int ordem;
     string numero;
     string cnpjCadastrado;
     string cnpjSelecionado;
@@ -20,12 +21,14 @@ void lerArquivo(ifstream& arquivo, Container*& cadastrados, int& numC, Container
     arquivo >> numC;
     cadastrados = new Container[numC];
     for (int i = 0; i < numC; ++i) {
+        cadastrados[i].ordem = i;
         arquivo >> cadastrados[i].numero >> cadastrados[i].cnpjCadastrado >> cadastrados[i].pesoCadastrado;
     }
 
     arquivo >> numS;
     selecionados = new Container[numS];
     for (int i = 0; i < numS; ++i) {
+        selecionados[i].ordem = i;
         arquivo >> selecionados[i].numero >> selecionados[i].cnpjSelecionado >> selecionados[i].pesoSelecionado;
     }
 }
@@ -36,47 +39,36 @@ void filtrarIrregulares(Container* cadastrados, int numC, Container* selecionado
 
     // Loop para verificar os cadastrados e selecionados
     for (int i = 0; i < numC; ++i) {
-        
-        // Flag para verificar se o número foi encontrado nos selecionados
-        // bool encontrado = false;
-        
         // Flag para garantir que um container seja adicionado apenas uma vez
         bool adicionado = false;
 
-        for (int j = 0; j < numS; ++j) {
-            if (cadastrados[i].numero == selecionados[j].numero) {
-                // encontrado = true; // Encontrou o número nos selecionados
+        Container atual = selecionados[j];
+        if (cadastrados[i].numero == selecionados[j].numero) {
 
-                // Verificar divergência de CNPJ
-                if (cadastrados[i].cnpjCadastrado != selecionados[j].cnpjSelecionado) {
-                    selecionados[j].cnpjCadastrado = cadastrados[i].cnpjCadastrado;
-                    selecionados[j].divergenciaCnpj = true;
-                    // Adiciona à lista de irregulares apenas se ainda não foi adicionado
-                    if (!adicionado) {
-                        irregulares[numI++] = selecionados[j]; // Adiciona à lista de irregulares
-                        adicionado = true;  // Marca como adicionado
-                    }
+            // Verificar divergência de CNPJ
+            if (cadastrados[i].cnpjCadastrado != selecionados[j].cnpjSelecionado) {
+                selecionados[j].cnpjCadastrado = cadastrados[i].cnpjCadastrado;
+                selecionados[j].divergenciaCnpj = true;
+                // Adiciona à lista de irregulares apenas se ainda não foi adicionado
+                if (!adicionado) {
+                    irregulares[numI++] = selecionados[j]; // Adiciona à lista de irregulares
+                    adicionado = true;  // Marca como adicionado
                 }
-
-                // Verificar divergência de peso
-                if (abs(cadastrados[i].pesoCadastrado - selecionados[j].pesoSelecionado) > cadastrados[i].pesoCadastrado * 0.1) {
-                    selecionados[j].pesoCadastrado = cadastrados[i].pesoCadastrado;
-                    selecionados[j].divergenciaPeso = true;
-                    // Adiciona à lista de irregulares apenas se ainda não foi adicionado
-                    if (!adicionado) {
-                        irregulares[numI++] = selecionados[j]; // Adiciona à lista de irregulares
-                        adicionado = true;  // Marca como adicionado
-                    }
-                }
-
-                break; // Já achou o item correspondente, pode sair do loop
             }
-        }
 
-        // // Se o número do container cadastrado não foi encontrado nos selecionados
-        // if (!encontrado) {
-        //     cout << "Número " << cadastrados[i].numero << " não encontrado nos selecionados!" << endl;
-        // }
+            // Verificar divergência de peso
+            if (abs(cadastrados[i].pesoCadastrado - selecionados[j].pesoSelecionado) > cadastrados[i].pesoCadastrado * 0.1) {
+                selecionados[j].pesoCadastrado = cadastrados[i].pesoCadastrado;
+                selecionados[j].divergenciaPeso = true;
+                // Adiciona à lista de irregulares apenas se ainda não foi adicionado
+                if (!adicionado) {
+                    irregulares[numI++] = selecionados[j]; // Adiciona à lista de irregulares
+                    adicionado = true;  // Marca como adicionado
+                }
+            }
+
+            break; // Já achou o item correspondente, pode sair do loop
+        }
     }
 }
 
