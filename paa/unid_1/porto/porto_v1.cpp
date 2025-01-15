@@ -13,7 +13,7 @@ struct Container {
     int pesoSelecionado = 0;
     bool divergenciaCnpj = false;
     bool divergenciaPeso = false;
-
+    int percentualPeso = 0;
 };
 
 void lerArquivo(ifstream& arquivo, Container*& cadastrados, int& numC, Container*& selecionados, int& numS) {
@@ -58,8 +58,12 @@ void filtrarIrregulares(Container* cadastrados, int numC, Container* selecionado
                     }
                 }
 
+                int diferencaPeso = abs(cadastrados[i].pesoCadastrado - selecionados[j].pesoSelecionado);
+
                 // Verificar divergência de peso
-                if (abs(cadastrados[i].pesoCadastrado - selecionados[j].pesoSelecionado) > cadastrados[i].pesoCadastrado * 0.1) {
+                if (diferencaPeso > cadastrados[i].pesoCadastrado * 0.1) {
+                    int diferencaPercentual = round(diferencaPeso * 100.0 / cadastrados[i].pesoCadastrado);
+                    selecionados[j].percentualPeso = diferencaPercentual;
                     selecionados[j].pesoCadastrado = cadastrados[i].pesoCadastrado;
                     selecionados[j].divergenciaPeso = true;
                     // Adiciona à lista de irregulares apenas se ainda não foi adicionado
@@ -104,8 +108,15 @@ void merge(Container* entrada, int inicio, int meio, int fim) {
         } else if (direita[j].divergenciaCnpj) {
             entrada[k++] = direita[j++];
         } else {
-            if (esquerda[i].divergenciaPeso) {
+            if (esquerda[i].divergenciaPeso && direita[j].divergenciaPeso) {
+                if (esquerda[i].percentualPeso >= direita[j].percentualPeso) {
+                    entrada[k++] = esquerda[i++];
+                } else {
+                    entrada[k++] = direita[j++];
+                }
+            } else if (esquerda[i].divergenciaPeso) {
                 entrada[k++] = esquerda[i++];
+
             } else {
                 entrada[k++] = direita[j++];
             }
@@ -179,7 +190,7 @@ int main(int argc, char* argv[]) {
         }
         if (irregulares[i].divergenciaPeso) {
             arquivoSaida << irregulares[i].numero << ":" << abs(irregulares[i].pesoSelecionado - irregulares[i].pesoCadastrado) << "kg ("
-                         << round(abs(irregulares[i].pesoSelecionado - irregulares[i].pesoCadastrado) * 100.0 / irregulares[i].pesoCadastrado) << "%)" << endl;
+                         << irregulares[i].percentualPeso << "%)" << endl;
         }
     }
 
