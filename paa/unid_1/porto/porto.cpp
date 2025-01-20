@@ -105,14 +105,14 @@ void filtrarIrregulares(Container* cadastrados, int numC, Container* selecionado
             continue;
         } else if (cadastrados[c].codigo == selecionados[s].codigo) {
             int diferencaPeso = abs(cadastrados[c].pesoCadastrado - selecionados[s].pesoSelecionado);
+            int diferencaPercentual = round(diferencaPeso * 100.0 / cadastrados[c].pesoCadastrado);
 
             // Verificar divergência de CNPJ
             if (cadastrados[c].cnpjCadastrado != selecionados[s].cnpjSelecionado) {
                 selecionados[s].cnpjCadastrado = cadastrados[c].cnpjCadastrado;
                 selecionados[s].divergenciaCnpj = true;
                 irregulares[numI++] = selecionados[s];
-            } else if (diferencaPeso > cadastrados[c].pesoCadastrado * 0.1) {
-                int diferencaPercentual = round(diferencaPeso * 100.0 / cadastrados[c].pesoCadastrado);
+            } else if (diferencaPercentual > 10) {
                 selecionados[s].percentualPeso = diferencaPercentual;
                 selecionados[s].pesoCadastrado = cadastrados[c].pesoCadastrado;
                 selecionados[s].divergenciaPeso = true;
