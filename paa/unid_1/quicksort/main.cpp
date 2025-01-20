@@ -3,6 +3,12 @@
 
 using namespace std;
 
+// Definição da struct para contadores nomeados
+struct Contador {
+    string nome;
+    int valor;
+};
+
 // Definição da struct Lista
 struct Lista {
     int tamanho;        // Tamanho da lista
@@ -12,21 +18,18 @@ struct Lista {
     int* elementosHP;   // lista para Hoare padrão
     int* elementosHM;   // lista para Hoare mediana de 3
     int* elementosHA;   // lista para Hoare aleatorio
-    int lp = 0;         // Contador para Lomuto Padrão
-    int lm = 0;         // Contador para Lomuto por mediana de 3
-    int la = 0;         // Contador para Lomuto por pivô aleatorio
-    int hp = 0;         // Contador para Hoare Padrão
-    int hm = 0;         // Contador para Hoare por mediana de 3
-    int ha = 0;         // Contador para Hoare por pivô aleatorio
+
+    Contador contadores[6] = { {"LP", 0}, {"LM", 0}, {"LA", 0},
+                               {"HP", 0}, {"HM", 0}, {"HA", 0} };
 };
 
 enum Modo {
-    LP = 1,
-    LM = 2,
-    LA = 3,
-    HP = 4,
-    HM = 5,
-    HA = 6
+    LP = 0,
+    LM = 1,
+    LA = 2,
+    HP = 3,
+    HM = 4,
+    HA = 5
 };
 
 // Função para validar e abrir os arquivos
@@ -96,12 +99,12 @@ void trocar(int& a, int& b, Lista& lista, int modo) {
     a = b;
     b = temp;
     
-    if (modo == LP) lista.lp++;
-    else if (modo == LM) lista.lm++;
-    else if (modo == LA) lista.la++;
-    else if (modo == HP) lista.hp++;
-    else if (modo == HM) lista.hm++;
-    else if (modo == HA) lista.ha++;
+    if (modo == LP) lista.contadores[LP].valor++;
+    else if (modo == LM) lista.contadores[LM].valor++;
+    else if (modo == LA) lista.contadores[LA].valor++;
+    else if (modo == HP) lista.contadores[HP].valor++;
+    else if (modo == HM) lista.contadores[HM].valor++;
+    else if (modo == HA) lista.contadores[HA].valor++;
 }
 
 int medianaDeTres(int* elementos, int inicio, int fim) {
@@ -156,9 +159,9 @@ int lomuto(int* elementos, int inicio, int fim, Lista& lista, int modo) {
 
 // Quicksort Lomuto
 void quicksortL(int* elementos, int inicio, int fim, Lista& lista, int modo) {
-    if (modo == LP) lista.lp++;
-    else if (modo == LM) lista.lm++;
-    else if (modo == LA) lista.la++;
+    if (modo == LP) lista.contadores[LP].valor++;
+    else if (modo == LM) lista.contadores[LM].valor++;
+    else if (modo == LA) lista.contadores[LA].valor++;
 
     if (inicio < fim) {
         int pivo = lomuto(elementos, inicio, fim, lista, modo);
@@ -199,14 +202,56 @@ int hoare(int* elementos, int inicio, int fim, Lista& lista, int modo) {
 
 // Quicksort Hoare
 void quicksortH(int* elementos, int inicio, int fim, Lista& lista, int modo) {
-    if (modo == HP) lista.hp++;
-    else if (modo == HM) lista.hm++;
-    else if (modo == HA) lista.ha++;
+    if (modo == HP) lista.contadores[HP].valor++;
+    else if (modo == HM) lista.contadores[HM].valor++;
+    else if (modo == HA) lista.contadores[HA].valor++;
 
     if (inicio < fim) {
         int pivo = hoare(elementos, inicio, fim, lista, modo);
         quicksortH(elementos, inicio, pivo, lista, modo);
         quicksortH(elementos, pivo + 1, fim, lista, modo);
+    }
+}
+
+void merge(Contador* entrada, int inicio, int meio, int fim) {
+    int n1 = meio - inicio + 1;
+    int n2 = fim - meio;
+
+    Contador* esquerda = new Contador[n1];
+    Contador* direita = new Contador[n2];
+
+    for (int i = 0; i < n1; ++i) esquerda[i] = entrada[inicio + i];
+    for (int i = 0; i < n2; ++i) direita[i] = entrada[meio + 1 + i];
+
+    int i = 0, j = 0, k = inicio;
+
+    while (i < n1 && j < n2) {
+        if (esquerda[i].valor <= direita[j].valor) {
+            entrada[k++] = esquerda[i++];
+        } else {
+            entrada[k++] = direita[j++];
+        }
+    }
+
+    while (i < n1) {
+        entrada[k++] = esquerda[i++];
+    }
+
+    while (j < n2) {
+        entrada[k++] = direita[j++];
+    }
+
+    delete[] esquerda;
+    delete[] direita;
+}
+
+void mergeSort(Contador* entrada, int inicio, int fim) {
+    if (inicio < fim) {
+        int meio = inicio + (fim - inicio) / 2;
+
+        mergeSort(entrada, inicio, meio);
+        mergeSort(entrada, meio + 1, fim);
+        merge(entrada, inicio, meio, fim);
     }
 }
 
@@ -251,14 +296,18 @@ int main(int argc, char* argv[]) {
         quicksortH(listas[i].elementosHA, 0, listas[i].tamanho - 1, listas[i], HA);
     }
 
+    for (int i = 0; i < numListas; i++) {
+        mergeSort(listas[i].contadores, 0, 5);
+    }
+
     for (int i = 0; i < numListas; ++i) {
-        arquivoSaida << "Lista " << i + 1 << ": N(" << listas[i].tamanho 
-                     << "), LP(" << listas[i].lp
-                     << "), LM(" << listas[i].lm
-                     << "), LA(" << listas[i].la
-                     << "), HP(" << listas[i].hp
-                     << "), HM(" << listas[i].hm
-                     << "), HA(" << listas[i].ha << ")" << endl;
+        arquivoSaida << i << ":N(" << listas[i].tamanho;
+
+        for (int j = 0; j < 6; j++) {
+            arquivoSaida << ")," << listas[i].contadores[j].nome << "(" << listas[i].contadores[j].valor;
+        }
+
+        arquivoSaida << ")" << endl;
     }
     
     liberarMemoria(listas, numListas);
