@@ -120,9 +120,8 @@ int medianaDeTres(int* elementos, int inicio, int fim) {
     int v2 = elementos[idx2];
     int v3 = elementos[idx3];
 
-    // Determinar a mediana sem alterar a lista
-    if ((v1 > v2) != (v1 > v3)) return idx1; // 'v1' é a mediana
-    else if ((v2 > v1) != (v2 > v3)) return idx2; // 'v2' é a mediana
+    if ((v1 >= v2 && v1 <= v3) || (v1 <= v2 && v1 >= v3)) return idx1; // 'v1' é a mediana
+    if ((v2 >= v1 && v2 <= v3) || (v2 <= v1 && v2 >= v3)) return idx2; // 'v2' é a mediana
     else return idx3; // 'v3' é a mediana
 }
 
@@ -301,10 +300,10 @@ int main(int argc, char* argv[]) {
     }
 
     for (int i = 0; i < numListas; ++i) {
-        arquivoSaida << i << ":N(" << listas[i].tamanho;
+        arquivoSaida << i << ": N(" << listas[i].tamanho;
 
         for (int j = 0; j < 6; j++) {
-            arquivoSaida << ")," << listas[i].contadores[j].nome << "(" << listas[i].contadores[j].valor;
+            arquivoSaida << ") " << listas[i].contadores[j].nome << "(" << listas[i].contadores[j].valor;
         }
 
         arquivoSaida << ")" << endl;
