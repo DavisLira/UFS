@@ -91,7 +91,7 @@ void mostrarPacotes(Pacote* pacotes, int n, int& atual, ofstream& arquivoSaida) 
         string linhaDados;            // Armazena os dados da linha atual
         bool primeiraParte = true;    // Para controlar a separação dos pacotes
 
-        for (int i = 0; i < n; i++) {
+        for (int i = atual; i < n; i++) {
             if (pacotes[i].numero == atual) {
                 // Adiciona a barra de separação no início da linha
                 if (!primeiraParte) {
