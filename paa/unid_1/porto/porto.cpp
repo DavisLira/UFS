@@ -233,10 +233,10 @@ int main(int argc, char* argv[]) {
     // Escrever os resultados de divergências no arquivo de saída
     for (int i = 0; i < numI; ++i) {
         if (irregulares[i].divergenciaCnpj) {
-            arquivoSaida << irregulares[i].codigo << ":" << irregulares[i].cnpjCadastrado << "<->" << irregulares[i].cnpjSelecionado << endl;
+            arquivoSaida << irregulares[i].codigo << ": " << irregulares[i].cnpjCadastrado << "<->" << irregulares[i].cnpjSelecionado << endl;
         }
         if (irregulares[i].divergenciaPeso) {
-            arquivoSaida << irregulares[i].codigo << ":" << abs(irregulares[i].pesoSelecionado - irregulares[i].pesoCadastrado) << "kg ("
+            arquivoSaida << irregulares[i].codigo << ": " << abs(irregulares[i].pesoSelecionado - irregulares[i].pesoCadastrado) << "kg ("
                          << irregulares[i].percentualPeso << "%)" << endl;
         }
     }
