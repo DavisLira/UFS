@@ -300,10 +300,10 @@ int main(int argc, char* argv[]) {
     }
 
     for (int i = 0; i < numListas; ++i) {
-        arquivoSaida << i << ": N(" << listas[i].tamanho;
+        arquivoSaida << i << ":N(" << listas[i].tamanho;
 
         for (int j = 0; j < 6; j++) {
-            arquivoSaida << ") " << listas[i].contadores[j].nome << "(" << listas[i].contadores[j].valor;
+            arquivoSaida << ")," << listas[i].contadores[j].nome << "(" << listas[i].contadores[j].valor;
         }
 
         arquivoSaida << ")" << endl;
