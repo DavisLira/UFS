@@ -4,8 +4,10 @@
 #include <cmath>
 #include <iomanip>  // Para controle de casas decimais
 #include <fstream>  // Para ler e escrever arquivos
+#include <chrono> 
 
 using namespace std;
+using namespace chrono;
 
 struct Pacote {
     string codigo;  // Identificador do pacote
@@ -65,63 +67,71 @@ void ler_arquivo(ifstream& input, int& num_carros, int& num_pacotes, Carro*& car
 }
 
 void knapsack(Carro& carro, Pacote* pacotes, int num_pacotes) {
-    // Alocação dinâmica da tabela DP para evitar estouro de pilha
+    int maxPeso = (int)carro.peso_max;
+    int maxVolume = (int)carro.volume_max;
+
+    // Aloca um bloco único para todos os valores dp
+    float* dp_data = new float[(num_pacotes + 1) * (maxPeso + 1) * (maxVolume + 1)]();
+    
+    // Cria a estrutura dp (três níveis) apontando para o bloco alocado
     float*** dp = new float**[num_pacotes + 1];
     for (int i = 0; i <= num_pacotes; i++) {
-        dp[i] = new float*[(int)carro.peso_max + 1];
-        for (int w = 0; w <= (int)carro.peso_max; w++) {
-            dp[i][w] = new float[(int)carro.volume_max + 1](); // Inicializa com 0
+        dp[i] = new float*[maxPeso + 1];
+        for (int w = 0; w <= maxPeso; w++) {
+            // Cada dp[i][w] aponta para a posição correspondente no bloco único
+            dp[i][w] = dp_data + i * ((maxPeso + 1) * (maxVolume + 1)) + w * (maxVolume + 1);
         }
     }
-    
 
-    // Construindo a tabela DP
     for (int i = 1; i <= num_pacotes; i++) {
-        if (pacotes[i - 1].alocado) continue; // Ignora pacotes já alocados
+        // Se o pacote já foi alocado, pula
+        if (pacotes[i - 1].alocado)
+            continue;
 
-        for (int w = 0; w <= (int)carro.peso_max; w++) {
-            for (int v = 0; v <= (int)carro.volume_max; v++) {
-                if (pacotes[i - 1].peso <= w && pacotes[i - 1].volume <= v) {
-                    int new_w = w - (int)pacotes[i - 1].peso;
-                    int new_v = v - (int)pacotes[i - 1].volume;
-                    
-                    dp[i][w][v] = max(
-                        pacotes[i - 1].valor + (new_w >= 0 && new_v >= 0 ? dp[i - 1][new_w][new_v] : 0),
-                        dp[i - 1][w][v]
-                    );
+        // Cache local dos atributos do pacote para reduzir acessos repetidos
+        float valorPacote = pacotes[i - 1].valor;
+        int pacotePeso = (int)pacotes[i - 1].peso;
+        int pacoteVolume = (int)pacotes[i - 1].volume;
+
+        // Cache dos ponteiros para a linha da DP
+        float** prevDP = dp[i - 1];
+        float** currDP = dp[i];
+        for (int w = 0; w <= maxPeso; w++) {
+            for (int v = 0; v <= maxVolume; v++) {
+                if (w >= pacotePeso && v >= pacoteVolume) {
+                    // A condição "w >= pacotePeso && v >= pacoteVolume" garante new_w e new_v >= 0,
+                    // não sendo necessário reavaliar
+                    float candidate = valorPacote + prevDP[w - pacotePeso][v - pacoteVolume];
+                    currDP[w][v] = (candidate > prevDP[w][v] ? candidate : prevDP[w][v]);
                 } else {
-                    dp[i][w][v] = dp[i - 1][w][v];
+                    currDP[w][v] = prevDP[w][v];
                 }
             }
         }
     }
 
-    // Recuperando os pacotes selecionados
-    int w = (int)carro.peso_max, v = (int)carro.volume_max;
+    int w = maxPeso, v = maxVolume;
     int num_pac_esc = 0;
     Pacote* pacotes_escolhidos = new Pacote[num_pacotes];
 
     for (int i = num_pacotes; i > 0 && w > 0 && v > 0; i--) {
-        if (pacotes[i - 1].alocado) continue; // Pula pacotes já alocados
+        if (pacotes[i - 1].alocado)
+            continue;
 
         if (dp[i][w][v] != dp[i - 1][w][v]) {
             pacotes_escolhidos[num_pac_esc++] = pacotes[i - 1];
-            pacotes[i - 1].alocado = true; // Marca o pacote como alocado
-
+            pacotes[i - 1].alocado = true;
             w -= (int)pacotes[i - 1].peso;
             v -= (int)pacotes[i - 1].volume;
         }
     }
 
-    // Atribuir pacotes selecionados ao carro
     carro.pacotes = pacotes_escolhidos;
     carro.num_pacotes = num_pac_esc;
 
-    // Liberar memória alocada para dp
+    // Libera a memória alocada para a DP
+    delete[] dp_data;
     for (int i = 0; i <= num_pacotes; i++) {
-        for (int w = 0; w <= (int)carro.peso_max; w++) {
-            delete[] dp[i][w];
-        }
         delete[] dp[i];
     }
     delete[] dp;
@@ -198,6 +208,7 @@ void mostrar_pacotes_pendentes(ofstream& output, Pacote* pacotes, int num_pacote
 }
 
 int main(int argc, char* argv[]) {
+    auto start = high_resolution_clock::now();
     if (argc != 3) {
         cerr << "Uso: " << argv[0] << " <arquivo_entrada> <arquivo_saida>" << endl;
         return 1;
@@ -214,7 +225,15 @@ int main(int argc, char* argv[]) {
     Carro* carros = nullptr;
     ler_arquivo(input, num_carros, num_pacotes, carros, pacotes);
 
+    auto end = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(end - start);
+    cout << "Tempo para inicializar e ler arquivo: " << duration.count() << " microsegundos\n";
+
+    start = high_resolution_clock::now();
     verificar_disponibilidade(carros, num_carros, pacotes, num_pacotes);
+    end = high_resolution_clock::now();
+    duration = duration_cast<microseconds>(end - start);
+    cout << "Tempo para verificar disponibilidade: " << duration.count() << " microsegundos\n";
 
     mostrar_carros(output, carros, num_carros);
 
@@ -225,3 +244,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
