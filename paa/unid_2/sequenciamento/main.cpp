@@ -50,24 +50,6 @@ void ler_arquivo(ifstream &input, string &dna, int &tam_subcadeia, Doenca *&doen
     input.close();
 }
 
-
-4 void calcular_tabela(int32_t* k, char* P) {
-5 // i = sufixo, j = prefixo
-6 for(int32_t i = 1, j = -1; i < strlen(P); i++) {
-7 // Prefixo e sufixo diferentes
-8 while(j >= 0 && P[j + 1] != P[i])
-9 // Retorno de estado
-10 j = k[j];
-11 // Combinação de prefixo e sufixo
-12 if(P[j + 1] == P[i])
-13 // Avanço de estado
-14 j++;
-15 // Atualização da transição do estado
-16 k[i] = j;
-17 }
-18 }
-
-
 int contar_genes_detectados(string dna, Gene gene, int tam_subcadeia) {
     int num_genes_detectados = 0;
 }
