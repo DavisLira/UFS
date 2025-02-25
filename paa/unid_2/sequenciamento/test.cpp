@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <chrono>
+#include <cmath>    // para round()
 
 using namespace std;
 using namespace chrono;
@@ -15,7 +16,7 @@ struct Doenca {
     string nome;
     int num_genes;
     Gene* genes;
-    int tamanho_genes;
+    int tamanho_genes; // soma dos tamanhos de todos os genes
     int prob;
 };
 
@@ -46,6 +47,7 @@ void ler_arquivo(ifstream &input, string &dna, int &tam_subcadeia, Doenca *&doen
     for (int i = 0; i < num_doencas; i++) {
         input >> doencas[i].nome >> doencas[i].num_genes;
         doencas[i].genes = new Gene[doencas[i].num_genes];
+        doencas[i].tamanho_genes = 0; // inicializa com 0 antes de acumular
         for (int j = 0; j < doencas[i].num_genes; j++) {
             input >> doencas[i].genes[j].sequencia;
             tam_gene = doencas[i].genes[j].sequencia.size();
@@ -58,24 +60,16 @@ void ler_arquivo(ifstream &input, string &dna, int &tam_subcadeia, Doenca *&doen
 
 /* 
 Função auxiliar: tenta extrair um segmento de correspondência do gene a partir das posições atuais.
-Parâmetros:
-  dna, gene, tam_subcadeia
-  pos_dna, pos_gene: posição inicial nos respectivos vetores.
-  
-Retorna (por referência):
-  new_dna, new_gene: as posições onde a busca parou;
-  segCount: quantos caracteres consecutivos foram combinados.
-  
-Se o segmento encontrado tiver comprimento >= tam_subcadeia, a função retorna true.
-Além disso, se o segmento foi interrompido por divergência (e não por ter chegado ao fim do gene)
-e se o que falta no gene é menor que tam_subcadeia, então o segmento é “ajustado” para valer apenas tam_subcadeia.
+Se o segmento tiver comprimento >= tam_subcadeia, atualiza:
+   - new_dna: nova posição no DNA onde a busca continuará;
+   - new_gene: nova posição no gene;
+   - segCount: quantidade de caracteres combinados.
 */
 bool match_segment(const string &dna, const Gene &gene, int pos_dna, int pos_gene, int tam_subcadeia,
                    int &new_dna, int &new_gene, int &segCount)
 {
     int i = pos_dna, j = pos_gene;
     int count = 0;
-    // percorre enquanto houver caracteres em ambos
     while(i < dna.size() && j < gene.tamanho) {
         if(dna[i] == gene.sequencia[j]) {
             count++;
@@ -85,83 +79,84 @@ bool match_segment(const string &dna, const Gene &gene, int pos_dna, int pos_gen
             break;
         }
     }
-    // Se encontramos um segmento com tamanho suficiente:
     if(count >= tam_subcadeia) {
-        // Se a interrupção ocorreu por divergência (ou seja, não chegou ao fim do gene)
-        // e o que falta do gene (a partir de j) é menor que tam_subcadeia,
-        // consideramos que esse segmento, apesar de maior, não poderá ser completado;
-        // assim, contamos somente o mínimo.
-        if(j < gene.tamanho && (gene.tamanho - j) < tam_subcadeia)
-            segCount = tam_subcadeia;
-        else
-            segCount = count;
-        new_dna = i;  // a busca continuará a partir daqui no DNA
-        new_gene = j; // e a partir deste índice no gene
+        segCount = count;  // Agora, sempre conta o total combinado
+        new_dna = i;  
+        new_gene = j; 
         return true;
     }
     return false;
 }
 
 /*
-A função contar_genes percorre o DNA tentando “extrair” sucessivos segmentos de correspondência do gene.
-Se um segmento válido for encontrado (ou seja, com pelo menos tam_subcadeia caracteres consecutivos),
-o contador é incrementado (com o valor do segmento – ou com tam_subcadeia, se for final de gene) e a busca
-continua a partir dos pontos onde parou.
-Caso a tentativa de extração falhe, se ainda não tivermos iniciado um segmento (pos_gene == 0)
-avançamos uma posição no DNA; se já estivermos “dentro” de uma correspondência (pos_gene > 0), deixamos o ponteiro do gene inalterado e avançamos no DNA.
+A função contar_genes percorre o DNA tentando extrair sucessivos segmentos de correspondência do gene.
+Se um segmento válido for encontrado (com pelo menos tam_subcadeia caracteres consecutivos),
+incrementa o contador com o valor do segmento e a busca continua a partir dos pontos onde parou.
+Caso não seja possível extrair um segmento válido, avança o ponteiro do DNA.
 */
 int contar_genes(string dna, Gene gene, int tam_subcadeia) {
     int contador = 0;
     int pos_dna = 0, pos_gene = 0;
     int segCount = 0, new_dna = 0, new_gene = 0;
 
-    // enquanto houver caracteres no DNA e ainda houver parte do gene a ser “processada”
     while(pos_dna < dna.size() && pos_gene < gene.tamanho) {
-        // Tenta extrair um segmento a partir das posições atuais
         if(match_segment(dna, gene, pos_dna, pos_gene, tam_subcadeia, new_dna, new_gene, segCount)) {
             contador += segCount;
             pos_dna = new_dna; 
             pos_gene = new_gene;
         } else {
-            // Se não conseguiu extrair um segmento válido:
-            if(pos_gene == 0) {
-                pos_dna++; // não estava iniciando uma correspondência, avança o DNA
-            } else {
-                // Se já estava no meio de uma tentativa, mantém o ponteiro do gene e avança o DNA
-                pos_dna++;
-            }
+            // Se ainda não iniciou uma correspondência, avança no DNA
+            pos_dna++;
         }
     }
     return contador;
 }
 
-void procurar_por_gene(string dna, Doenca& doenca, Gene* genes, int num_genes, int tam_subcadeia) {
-    int contador = 0;
-    int contador_final = 0;
-    cout << "Doença: " << doenca.nome << endl;
+/*
+Função para procurar os genes e calcular a probabilidade da doença.
+- Se a doença tem apenas 1 gene: 
+    prob = round((contador * 100) / tamanho_do_gene);
+- Se a doença tem mais de 1 gene:
+    Para cada gene, se (round((contador * 100) / tamanho_do_gene)) >= 90, conta como 1.
+    A probabilidade final é ( (número de genes com >= 90%) * 100 / número total de genes ),
+    ajustando para 100 se o resultado for > 90.
+*/
+void procurar_por_gene(string dna, Doenca &doenca, Gene* genes, int num_genes, int tam_subcadeia) {
+    // cout << "Doença: " << doenca.nome << endl;
 
-    for (int i = 0; i < num_genes; i++) {
-        cout << "Gene: " << genes[i].sequencia << endl;
-        // Para cada gene, reiniciamos a busca no DNA do início
-        contador = contar_genes(dna, genes[i], tam_subcadeia);
-        cout << "Contador parcial: " << contador << endl;
-        // Aqui você pode acumular (por exemplo, somando) ou armazenar o valor em doenca.prob;
-        // neste exemplo, atribuímos o resultado deste gene.
-        contador_final += contador;
+    if(num_genes == 1) {
+        // cout << "Gene: " << genes[0].sequencia << endl;
+        int contador = contar_genes(dna, genes[0], tam_subcadeia);
+        // cout << "Contador parcial: " << contador << endl;
+        int prob = static_cast<int>( round((contador * 100.0) / genes[0].tamanho) );
+        if(prob > 90)
+            prob = 100;
+        doenca.prob = prob;
+        // cout << "Probabilidade: " << doenca.prob << endl << endl;
     }
-    cout << "Contador final: " << contador_final << endl << endl;
-
-    doenca.prob = (contador_final * 100) / doenca.tamanho_genes;
-    if (doenca.prob >= 90) {
-        doenca.prob = 100;
+    else {
+        int genesAcima90 = 0;
+        for (int i = 0; i < num_genes; i++) {
+            // cout << "Gene: " << genes[i].sequencia << endl;
+            int contador = contar_genes(dna, genes[i], tam_subcadeia);
+            int genePerc = static_cast<int>( round((contador * 100.0) / genes[i].tamanho) );
+            // cout << "Contador parcial: " << contador << " (Gene %: " << genePerc << "%)" << endl;
+            if(genePerc >= 90)
+                genesAcima90++;
+        }
+        int prob = static_cast<int>( round((genesAcima90 * 100.0) / num_genes) );
+        if(prob > 90)
+            prob = 100;
+        doenca.prob = prob;
+        // cout << "Contador final (genes com >= 90%): " << genesAcima90 << endl;
+        // cout << "Probabilidade: " << doenca.prob << endl << endl;
     }
-
-    cout << "probabilidade: " << doenca.prob << endl << endl;
 }
 
 void calcular_probabilidade(string dna, Doenca *doencas, int num_doencas, int tam_subcadeia) {
     for (int i = 0; i < num_doencas; i++) {
         procurar_por_gene(dna, doencas[i], doencas[i].genes, doencas[i].num_genes, tam_subcadeia);
+        if (doencas[i].prob >= 90) doencas[i].prob = 100;
     }
 }
 
@@ -177,8 +172,10 @@ void merge(Doenca *doencas, int left, int mid, int right) {
     Doenca *leftArray = new Doenca[n1];
     Doenca *rightArray = new Doenca[n2];
 
-    for (int i = 0; i < n1; i++) leftArray[i] = doencas[left + i];
-    for (int j = 0; j < n2; j++) rightArray[j] = doencas[mid + 1 + j];
+    for (int i = 0; i < n1; i++) 
+        leftArray[i] = doencas[left + i];
+    for (int j = 0; j < n2; j++) 
+        rightArray[j] = doencas[mid + 1 + j];
 
     int i = 0, j = 0, k = left;
     while (i < n1 && j < n2) {
@@ -188,8 +185,10 @@ void merge(Doenca *doencas, int left, int mid, int right) {
             doencas[k++] = rightArray[j++];
     }
 
-    while (i < n1) doencas[k++] = leftArray[i++];
-    while (j < n2) doencas[k++] = rightArray[j++];
+    while (i < n1) 
+        doencas[k++] = leftArray[i++];
+    while (j < n2) 
+        doencas[k++] = rightArray[j++];
 
     delete[] leftArray;
     delete[] rightArray;
