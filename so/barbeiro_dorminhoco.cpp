@@ -9,10 +9,17 @@
 
 using namespace std;
 
+mutex cout_mutex;
+
 void bem_vindo() {
     cout << "**********************************************" << endl;
     cout << "**  Bem vindo à Barbearia dos Dorminhocos!  **" << endl;
     cout << "**********************************************" << endl << endl;
+}
+
+void print_sync(const string& texto) {
+    lock_guard<mutex> lock(cout_mutex);
+    cout << texto << endl;
 }
 
 string vermelho(string texto) {
@@ -32,7 +39,7 @@ string azul(string texto) {
 }
 
 void barbeiro(string nome, queue<int>& clientes, mutex& mtx) {
-    cout << "Eu sou o " << nome << ". Estou pronto para cortar cabelos" << endl;
+    print_sync(verde(nome + " está pronto para cortar cabelos"));
     
     while (true) {
         unique_lock<mutex> lock(mtx);
@@ -42,15 +49,17 @@ void barbeiro(string nome, queue<int>& clientes, mutex& mtx) {
             clientes.pop();
             lock.unlock();
             string cortando = amarelo(nome + " está cortando o cabelo do cliente " + to_string(cliente_id));
-            cout << cortando << endl << endl;
+            print_sync(cortando);
+            cout << endl;
             int tempo = rand() % 6 + 5; // 5 a 10 segundos
             this_thread::sleep_for(chrono::seconds(tempo));
             string liberado = azul("- - - Cliente " + to_string(cliente_id) + " liberado - - -");
-            cout << endl << liberado << endl << endl;
+            print_sync(liberado);
+            cout << endl;
         } else {
             lock.unlock();
             string dormindo = vermelho(nome + " dormindo...");
-            cout << dormindo << endl;
+            print_sync(dormindo);
             this_thread::sleep_for(chrono::seconds(1));
         }
     }
@@ -68,11 +77,13 @@ void cliente_generator(queue<int>& clientes, int limite, mutex& mtx) {
         if (clientes.size() < limite) {
             clientes.push(cliente_id);
             string chegou = verde("- - - Cliente " + to_string(cliente_id) + " chegou - - -");
-            cout << endl << chegou << endl << endl;
+            print_sync(chegou);
+            cout << endl;
             cliente_id++;
         } else {
             string cheia = vermelho("- - - Fila cheia. Cliente " + to_string(cliente_id) + " não entrou na fila - - -");
-            cout << cheia << endl << endl;
+            print_sync(cheia);
+            cout << endl;
         }
     }
 }
