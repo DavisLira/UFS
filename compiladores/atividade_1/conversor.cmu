@@ -1,0 +1,47 @@
+A funcao Real_dolar arruma um numero.
+Se, para ela,
+    um numero R
+voce arranjar, o valor de
+    R / CAMBIO
+ela ira te retornar.
+
+A funcao Dolar_real arruma um numero.
+Se, para ela,
+    um numero D
+voce arranjar, o valor de
+    D * CAMBIO
+ela ira te retornar.
+
+A funcao Celsius_fahrenheit arruma um numero.
+Se, para ela,
+    um numero C
+voce arranjar, o valor de
+    (C * 9 / 5) + DIFERENCA
+ela ira te retornar.
+
+A funcao Fahrenheit_celsius arruma um numero.
+Se, para ela,
+    um numero F
+voce arranjar, o valor de
+    (F - DIFERENCA) * 5 / 9
+ela ira te retornar.
+
+A funcao Converte arruma um numero. 
+Se, para ela, 
+    uma funcao F (que arruma um numero em troca de um numero),
+    um numero N
+voce arranjar, o valor de 
+    F [ N ]
+ela ira te retornar.
+
+Ja ia esquecendo... preste atencao, por favor: 
+   CAMBIO diz ser um numero que tem 5,38 como valor e
+   DIFERENCA diz ser um numero que tem 32 como valor.
+
+Com sua licenca, por aqui vamos comecar!
+A funcao Principal arruma um numero. 
+Se, para ela, 
+   um nada, 
+voce arranjar, o valor de 
+   Converte[ Dolar_real | 2 ]
+ela ira te retornar.
