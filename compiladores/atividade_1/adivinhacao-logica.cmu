@@ -1,0 +1,38 @@
+A funcao Logica_Composta arruma uma resposta.
+Se, para ela,
+    um numero N e
+    um numero M
+voce arranjar, o valor de
+    uma condicao assim: 
+        se ((N > 10 e nao (N = 15)) ou (M < 5)) entao sim 
+        senao nao
+ela ira te retornar.
+
+A funcao Logica_Composta arruma uma resposta.
+Se, para ela,
+    um numero A,
+    um numero B e 
+    um numero C
+voce arranjar, o valor de
+    uma condicao assim:
+        se ((A <= 0) ou (B <= 0) ou (C <= 0)) entao nao
+        senao se (nao (A + B > C)) ou (nao (A + C > B)) ou (nao (B + C > A)) entao nao
+        senao sim
+ela ira te retornar
+
+Com sua licenca, por aqui vamos comecar!
+A funcao Principal arruma uma resposta.
+Se, para ela,
+    um nada,
+voce arranjar, o valor de
+    {
+        Exemplo de codigo utilizando a primeira forma
+        da funcao, somente para validar o numero N e M
+
+        Logica_Composta[ 15 | 4 ]
+    }
+
+    # Codigo para validar lados de um triangulo
+    Logica_Composta[ 2 | 2 | 3]
+
+ela ira te retornar.
