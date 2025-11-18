@@ -1,0 +1,103 @@
+Package cordelmaisum;
+
+Helpers
+ digito = ['0' .. '9'];
+ letra_min = ['a' .. 'z'];
+ letra_mai = ['A' .. 'Z'];
+ letra = letra_min | letra_mai;
+ espaco = ' ';
+ under = '_';
+ idchar = letra | digito | under;
+ rc = 13;
+ nl = 10;
+
+Tokens
+ a = 'A';
+ funcao = 'funcao';
+ arruma = 'arruma';
+ se = 'Se';
+ para = 'para';
+ ela = 'ela';
+ voce = 'voce';
+ arranjar = 'arranjar';
+ o = 'o';
+ valor = 'valor';
+ de = 'de';
+ ira = 'ira';
+ te = 'te';
+ retornar = 'retornar';
+
+ com = 'Com';
+ sua = 'sua';
+ licenca = 'licenca';
+ por = 'por';
+ aqui = 'aqui';
+ vamos = 'vamos';
+ comecar = 'comecar';
+ 
+ em = 'em';
+ troca = 'troca';
+
+ ja = 'Ja';
+ ia = 'ia';
+ esquecendo = 'esquecendo';
+ preste = 'preste';
+ atencao = 'atencao';
+ favor = 'favor';
+ 
+ diz = 'diz';
+ ser = 'ser';
+ que = 'que';
+ tem = 'tem';
+ como = 'como';
+
+ se_mini = 'se';
+ entao = 'entao';
+ senao = 'senao';
+ condicao = 'condicao';
+ assim = 'assim';
+ 
+ e = 'e';
+ ou = 'ou';
+
+ um = 'um';
+ uma = 'uma';
+ numero = 'numero';
+ resposta = 'resposta';
+ nada = 'nada';
+
+ reticencias = '...';
+ ponto = '.';
+ virgula = ',';
+ exclamacao = '!';
+ dois_pontos = ':';
+
+ sim = 'sim';
+ nao = 'nao';
+
+ numeral = digito+ ( ',' digito+ )?;
+
+ soma = '+';
+ menos = '-';
+ multi = '*';
+ div = '/';
+ mod = '%';
+ maior_igual_que = '>=';
+ menor_igual_que = '<=';
+ maior_que = '>';
+ menor_que = '<';
+ igual = '=';
+ 
+
+ parentese_esquerdo = '(';
+ parentese_direito = ')';
+ colchete_esquerdo = '[';
+ colchete_direito = ']';
+ pipe = '|';
+
+ id = letra_mai (idchar)*;
+
+ vazio = (espaco | rc | nl)+;
+
+Ignored Tokens
+ vazio;

@@ -1,0 +1,79 @@
+A funcao CalcTrigonometrica arruma um numero.
+Se, para ela,
+    um numero Operacao e
+    um numero Angulo
+voce arranjar, o valor de 
+    uma condicao assim:
+        se (Operacao = 1) entao
+            Seno [ Angulo ]
+        senao uma condicao assim:
+            se (Operacao = 2) entao
+                Cosseno [ Angulo ]
+            senao uma condicao assim:
+                se (Operacao = 3) entao
+                    Tangente [ Angulo ]
+                senao
+                    0
+ela ira te retornar.
+
+A funcao Soma arruma um numero.
+Se, para ela,
+    um numero Num1,
+    um numero Num2
+voce arranjar, o valor de
+    Num1 + Num2
+ela ira te retornar.
+
+A funcao Subtracao arruma um numero.
+Se, para ela,
+    um numero Num1,
+    um numero Num2
+voce arranjar, o valor de
+    Num1 - Num2
+ela ira te retornar.
+
+A funcao Multiplicacao arruma um numero.
+Se, para ela,
+    um numero Num1,
+    um numero Num2
+voce arranjar, o valor de
+    Num1 * Num2
+ela ira te retornar.
+
+A funcao Divisao arruma um numero.
+Se, para ela,
+    um numero Num1,
+    um numero Num2
+voce arranjar, o valor de
+    Num1 / Num2
+ela ira te retornar.
+
+A funcao CalcAritmetica arruma um numero .
+Se, para ela,
+    um numero Operacao,
+    um numero Num1,
+    um numero Num2
+voce arranjar, o valor de
+    uma condicao assim:
+        se (Operacao = 1) entao
+            Soma[Num1 | Num2 ]
+        senao uma condicao assim:
+            se (Operacao = 2) entao
+                Subtracao[Num1 | Num2 ]
+            senao uma condicao assim:
+                se (Operacao = 3) entao
+                    Multiplicacao[Num1 | Num2 ]
+                senao uma condicao assim:
+                    se (Operacao = 4) entao
+                        Divisao[Num1 | Num2 ]
+                    senao
+                        0
+ela ira te retornar.
+
+Com sua licenca, por aqui vamos comecar!
+A funcao Principal arruma um numero. 
+Se, para ela, 
+   um nada, 
+voce arranjar, o valor de 
+   CalcTrigonometrica[ 1 | 60 ]
+ela ira te retornar.
